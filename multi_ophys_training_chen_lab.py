@@ -107,13 +107,13 @@ for local_index, indiv_generator in enumerate(generator_param_list):
     train_generator = generator_obj.find_and_build()(path_generator)
 
     # we don't need to set a random set of points for all 100 or so
-    if local_index == 0 :
-        keep_generator = train_generator
-    else:
-        train_generator.x_list = keep_generator.x_list
-        train_generator.y_list = keep_generator.y_list
-        train_generator.z_list = keep_generator.z_list
-        train_generator.t_list = keep_generator.t_list
+    #if local_index == 0 :
+        #keep_generator = train_generator
+    #else:
+        #train_generator.x_list = keep_generator.x_list
+        #train_generator.y_list = keep_generator.y_list
+        #train_generator.z_list = keep_generator.z_list
+        #train_generator.t_list = keep_generator.t_list
 
 
     list_train_generator.append(train_generator)
