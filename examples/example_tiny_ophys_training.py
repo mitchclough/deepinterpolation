@@ -27,16 +27,16 @@ generator_test_param["type"] = "generator"  # type of collection
 generator_test_param["name"] = "SingleTifGenerator"  # Name of object in the collection
 generator_test_param[
     "pre_post_frame"
-] = 30  # Number of frame provided before and after the predicted frame
+] = 15  # Number of frame provided before and after the predicted frame
 generator_test_param["train_path"] = os.path.join(
     pathlib.Path(__file__).parent.absolute(),
     "..",
     "sample_data",
-    "ophys_tiny_761605196.tif",
+    "A0_Ch0_16-44-59.mat",
 )
 generator_test_param["batch_size"] = 5
 generator_test_param["start_frame"] = 0
-generator_test_param["end_frame"] = 99
+generator_test_param["end_frame"] = 135
 generator_test_param[
     "pre_post_omission"
 ] = 1  # Number of frame omitted before and after the predicted frame
@@ -48,16 +48,16 @@ generator_test_param[
 generator_param["type"] = "generator"
 generator_param["steps_per_epoch"] = steps_per_epoch
 generator_param["name"] = "SingleTifGenerator"
-generator_param["pre_post_frame"] = 30
+generator_param["pre_post_frame"] = 15
 generator_param["train_path"] = os.path.join(
     pathlib.Path(__file__).parent.absolute(),
     "..",
     "sample_data",
-    "ophys_tiny_761605196.tif",
+    "A0_Ch0_16-44-59.mat",
 )
 generator_param["batch_size"] = 5
-generator_param["start_frame"] = 0
-generator_param["end_frame"] = 99
+generator_param["start_frame"] = 135
+generator_param["end_frame"] = 335
 generator_param["pre_post_omission"] = 0
 
 # Those are parameters used for the network topology
@@ -95,7 +95,7 @@ training_param["model_string"] = (
 
 # Where do you store ongoing training progress
 jobdir = os.path.join(
-    "/Users/jeromel/test", training_param["model_string"] + "_" + run_uid,
+    "/Users/danielle/Documents/Masters/DP_Test/Jan_19", training_param["model_string"] + "_" + run_uid,
 )
 training_param["output_dir"] = jobdir
 

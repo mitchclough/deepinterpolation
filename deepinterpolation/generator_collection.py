@@ -8,6 +8,7 @@ from deepinterpolation.generic import JsonLoader
 import tifffile
 import nibabel as nib
 from scipy.io import wavfile
+from scipy.io import loadmat
 import s3fs
 
 
@@ -667,6 +668,13 @@ class SingleTifGenerator(DeepGenerator):
         self.pre_post_omission = self.json_data["pre_post_omission"]
         self.start_frame = self.json_data["start_frame"]
 
+
+        mat_file = loadmat(self.raw_data_file)['motion_corrected']
+        mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 1, 2))
+        mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 0, 1))
+        self.raw_data = np.pad(mat_file, [(0, 0), (56, 56), (26, 26)], mode='constant')
+
+
         if "randomize" in self.json_data.keys():
             self.randomize = self.json_data["randomize"]
         else:
@@ -675,8 +683,9 @@ class SingleTifGenerator(DeepGenerator):
         # This is compatible with negative frames
         self.end_frame = self.json_data["end_frame"]
 
-        with tifffile.TiffFile(self.raw_data_file) as tif:
-            self.raw_data = tif.asarray()
+
+        #with tifffile.TiffFile(self.raw_data_file) as tif:
+            #self.raw_data = tif.asarray()
 
         self.total_frame_per_movie = self.raw_data.shape[0]
 
@@ -1077,4 +1086,3 @@ class MovieJSONGenerator(DeepGenerator):
             return input_full, output_full
         except:
             print("Issues with " + str(self.lims_id) + " at " + str(output_frame_index))
-
