@@ -95,10 +95,10 @@ json_obj.save_json(path_training)
 
 list_train_generator = []
 for local_index, indiv_generator in enumerate(generator_param_list):
-    if local_index == 0 :
-        indiv_generator["initialize_list"] = 1
-    else:
-        indiv_generator["initialize_list"] = 0
+    #if local_index == 0 :
+        #indiv_generator["initialize_list"] = 1
+    #else:
+        #indiv_generator["initialize_list"] = 0
 
     path_generator = os.path.join(jobdir, "generator" + str(local_index) + ".json")
     json_obj = JsonSaver(indiv_generator)
