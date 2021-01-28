@@ -14,12 +14,13 @@ generator_param[
     "steps_per_epoch"
 ] = -1  # No steps necessary for inference as epochs are not relevant. -1 deactivate it.
 
-generator_param["train_path"] = os.path.join(
-    pathlib.Path(__file__).parent.absolute(),
-    "..",
-    "sample_data",
-    "A0_Ch0_16-44-59.mat",
-)
+generator_param["train_path"] = "/Users/danielle/Documents/Masters/DP_Test/Data/A0_Ch0_16-44-59.mat"
+#os.path.join(
+    #pathlib.Path(__file__).parent.absolute(),
+    #"..",
+    #"sample_data",
+    #"A0_Ch0_16-44-59.mat",
+#)
 
 generator_param["batch_size"] = 5
 generator_param["start_frame"] = 0
