@@ -23,14 +23,14 @@ generator_test_param['center_omission_size'] = 1
 
 generator_test_param[
     "train_path"
-] = " "
+] = "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-2/PreProcess/A0_Ch0/A0_Ch0_10-51-58.mat"
 generator_test_param["batch_size"] = 5
-generator_test_param["start_frame"] = 5
-generator_test_param["end_frame"] = 160
+generator_test_param["start_frame"] = 0
+generator_test_param["end_frame"] = 300
 generator_test_param["steps_per_epoch"] = steps_per_epoch
 generator_test_param["randomize"] = 1
 
-local_train_path = '/home/ec2-user/fmri_data/training'
+local_train_path = '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0'
 train_paths = os.listdir(local_train_path)
 
 generator_param_list = []
@@ -79,7 +79,7 @@ training_param["model_string"] = (
 )
 
 jobdir = (
-    "/home/ec2-user/trained_fmri_models/"
+    "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/trained_models"
     + training_param["model_string"]
     + "_"
     + run_uid
