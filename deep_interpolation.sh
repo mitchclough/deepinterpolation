@@ -16,9 +16,10 @@
 #$ -P jchenlab
 
 module load python3
+pip install --user s3fs
 module load tensorflow/2.3.1
 
-cd /usr3/staff/dlamay/deepinterpolation/
+cd /usr3/bustaff/dlamay/deepinterpolation/
 
 python setup.py  install
 
