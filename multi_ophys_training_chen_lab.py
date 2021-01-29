@@ -28,6 +28,7 @@ generator_test_param["batch_size"] = 5
 generator_test_param["start_frame"] = 5
 generator_test_param["end_frame"] = 160
 generator_test_param["steps_per_epoch"] = steps_per_epoch
+generator_test_param["randomize"] = 1
 
 local_train_path = '/home/ec2-user/fmri_data/training'
 train_paths = os.listdir(local_train_path)
@@ -45,7 +46,9 @@ for indiv_path in train_paths:
     generator_param["start_frame"] = 5
     generator_param["end_frame"] = 160
     generator_param["steps_per_epoch"] = steps_per_epoch
+    generator_param["randomize"] = 1
     generator_param["center_omission_size"] = 0
+
     generator_param_list.append(generator_param)
 
 network_param["type"] = "network"
@@ -61,7 +64,7 @@ training_param["nb_gpus"] = 0
 training_param["apply_learning_decay"] = 0
 training_param["pre_post_frame"] = generator_test_param["pre_post_frame"]
 training_param["nb_times_through_data"] = 1
-training_param["learning_rate"] = 0.0001
+training_param["learning_rate"] = 0.0005
 training_param["loss"] = "mean_absolute_error"
 training_param[
     "nb_workers"
