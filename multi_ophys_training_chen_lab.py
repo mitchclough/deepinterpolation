@@ -40,7 +40,7 @@ for indiv_path in train_paths:
 
     generator_param["type"] = "generator"
     generator_param["name"] = "SingleTifGenerator"
-    generator_test_param["pre_post_frame"] = 15
+    generator_param["pre_post_frame"] = 15
     generator_param["train_path"] = os.path.join(local_train_path, indiv_path)
     generator_param["batch_size"] = 5
     generator_param["start_frame"] = 5
