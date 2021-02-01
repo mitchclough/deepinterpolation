@@ -19,7 +19,7 @@ steps_per_epoch = 5
 generator_test_param["type"] = "generator"
 generator_test_param["name"] = "SingleTifGenerator"
 generator_test_param["pre_post_frame"] = 15
-generator_test_param['center_omission_size'] = 1
+generator_test_param['pre_post_omission_size'] = 1
 
 generator_test_param[
     "train_path"
@@ -47,7 +47,7 @@ for indiv_path in train_paths:
     generator_param["end_frame"] = 160
     generator_param["steps_per_epoch"] = steps_per_epoch
     generator_param["randomize"] = 1
-    generator_param["center_omission_size"] = 0
+    generator_param["pre_post_omission_size"] = 0
 
     generator_param_list.append(generator_param)
 
