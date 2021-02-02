@@ -26,7 +26,7 @@ generator_test_param[
 ] = "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-2/PreProcess/A0_Ch0/A0_Ch0_10-51-58.mat"
 generator_test_param["batch_size"] = 5
 generator_test_param["start_frame"] = 0
-generator_test_param["end_frame"] = 300
+generator_test_param["end_frame"] = 276
 generator_test_param["steps_per_epoch"] = steps_per_epoch
 generator_test_param["randomize"] = 1
 
