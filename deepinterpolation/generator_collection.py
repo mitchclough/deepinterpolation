@@ -681,7 +681,10 @@ class SingleTifGenerator(DeepGenerator):
             self.randomize = 1
 
         # This is compatible with negative frames
-        self.end_frame = self.json_data["end_frame"]
+        if self.json_data["end_frame"] > self.raw_data.shape[0]:
+            self.end_frame = self.raw_data.shape[0]
+        else:
+            self.end_frame = self.json_data["end_frame"]
 
 
         #with tifffile.TiffFile(self.raw_data_file) as tif:
