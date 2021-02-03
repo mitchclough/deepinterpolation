@@ -2,7 +2,7 @@ import json
 
 
 class JsonLoader:
-    """     
+    """
     JsonLoader is used to load the data from all structured json files associated with the DeepInterpolation package.
     """
 
@@ -13,7 +13,7 @@ class JsonLoader:
 
     def load_json(self):
         """
-        This function load the json file from the path recorded in the class instance. 
+        This function load the json file from the path recorded in the class instance.
 
         Parameters:
         None
@@ -44,36 +44,36 @@ class JsonLoader:
 
     def get_type(self):
         """
-        json types define the general category of the object the json file applies to.    
+        json types define the general category of the object the json file applies to.
         For instance, the json can apply to a data Generator type
 
-        Parameters: 
+        Parameters:
         None
-    
-        Returns: 
-        str: Description of the json type 
+
+        Returns:
+        str: Description of the json type
         """
 
         return self.json_data["type"]
 
     def get_name(self):
-        """     
+        """
         Each json type is sub-divided into different names. The name defines the exact construction logic of the object and how the
-        parameters json data is used. For instance, a json file can apply to a Generator type using the AudioGenerator name when 
-        generating data from an audio source. Type and Name fully defines the object logic. 
+        parameters json data is used. For instance, a json file can apply to a Generator type using the AudioGenerator name when
+        generating data from an audio source. Type and Name fully defines the object logic.
 
-        Parameters: 
+        Parameters:
         None
-    
-        Returns: 
-        str: Description of the json name 
+
+        Returns:
+        str: Description of the json name
         """
 
         return self.json_data["name"]
 
 
 class JsonSaver:
-    """     
+    """
     JsonSaver is used to save dict data into individual file.
     """
 
@@ -81,25 +81,27 @@ class JsonSaver:
         self.dict = dict_save
 
     def save_json(self, path):
-        """ 
-        This function save the json file into the path provided. 
+        """
+        This function save the json file into the path provided.
 
-        Parameters: 
+        Parameters:
         str: path: str
 
-        Returns: 
+        Returns:
         None
         """
 
         with open(path, "w") as write_file:
             json.dump(self.dict, write_file)
 
+        os.chmod(path, 0o777)
+
 
 class ClassLoader:
-    """     
+    """
     ClassLoader allows to select and create a specific Type and Name object from the available library of objects. It then
-    uses the parameters in the json file to create a specific instance of that object. 
-    It returns that object and the ClassLoader object should then be deleted. 
+    uses the parameters in the json file to create a specific instance of that object.
+    It returns that object and the ClassLoader object should then be deleted.
     """
 
     from deepinterpolation import network_collection
@@ -121,7 +123,7 @@ class ClassLoader:
         Parameters:
         None
 
-        Returns: 
+        Returns:
         obj: an instantiation callback of the object requested when creating ClassLoader with a json file
         """
 
