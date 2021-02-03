@@ -93,7 +93,6 @@ class JsonSaver:
 
         with open(path, "w") as write_file:
             json.dump(self.dict, write_file)
-
         os.chmod(path, 0o777)
 
 
