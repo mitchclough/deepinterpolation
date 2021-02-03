@@ -28,7 +28,7 @@ generator_test_param["batch_size"] = 5
 generator_test_param["start_frame"] = 0
 generator_test_param["end_frame"] = 276
 generator_test_param["steps_per_epoch"] = steps_per_epoch
-generator_test_param["randomize"] = 1
+generator_test_param["randomize"] = 0
 
 local_train_path = '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0'
 #train_paths = os.listdir(local_train_path)
