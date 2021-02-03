@@ -96,7 +96,7 @@ jobdir = (
 training_param["output_dir"] = jobdir
 
 try:
-    os.mkdir(jobdir)
+    os.mkdir(jobdir, 0777)
 except:
     print("folder already exists")
 
