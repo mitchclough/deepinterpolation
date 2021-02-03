@@ -2,7 +2,6 @@
 
 #this requests a node with a certain number of cpu cores
 #$ -pe omp 16
-#$ -l num_proc=16
 #$ -l gpus=1
 #$ -l gpu_type=V100
 #$ -l h_rt=24:00:00
