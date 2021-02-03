@@ -96,9 +96,10 @@ jobdir = (
 training_param["output_dir"] = jobdir
 
 try:
-    os.mkdir(jobdir, 0o777)
+    os.mkdir(jobdir, 0o775)
 except:
     print("folder already exists")
+
 
 path_training = os.path.join(jobdir, "training.json")
 json_obj = JsonSaver(training_param)
