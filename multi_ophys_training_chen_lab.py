@@ -87,7 +87,7 @@ training_param["model_string"] = (
 )
 
 jobdir = (
-    "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/trained_models/"
+    "/projectnb/jchenlab/trained_models/"
     + training_param["model_string"]
     + "_"
     + run_uid
