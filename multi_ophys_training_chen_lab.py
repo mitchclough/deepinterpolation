@@ -14,7 +14,7 @@ generator_param = {}
 network_param = {}
 generator_test_param = {}
 
-steps_per_epoch = 5
+steps_per_epoch = 10
 
 generator_test_param["type"] = "generator"
 generator_test_param["name"] = "SingleTifGenerator"
@@ -52,7 +52,7 @@ for indiv_path in train_paths:
     generator_param["train_path"] = os.path.join(local_train_path, indiv_path)
     generator_param["batch_size"] = 5
     generator_param["start_frame"] = 5
-    generator_param["end_frame"] = 160
+    generator_param["end_frame"] = 100
     generator_param["steps_per_epoch"] = steps_per_epoch
     generator_param["randomize"] = 1
     generator_param["pre_post_omission"] = 0
