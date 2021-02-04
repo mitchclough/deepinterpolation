@@ -18,7 +18,7 @@
 
 module load python3
 pip install --user s3fs
-module load tensorflow/2.1.0
+module load tensorflow/2.0.0
 
 cd /net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/
 chmod -R 775 trained_models

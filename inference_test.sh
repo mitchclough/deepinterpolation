@@ -16,7 +16,7 @@
 
 module load python3
 pip install --user s3fs
-module load tensorflow/2.1.0
+module load tensorflow/2.0.0
 
 
 cd /usr3/bustaff/dlamay/deepinterpolation/examples/
