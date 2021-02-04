@@ -8,13 +8,13 @@ inferrence_param = {}
 # We are reusing the data generator for training here.
 generator_param["type"] = "generator"
 generator_param["name"] = "SingleTifGenerator"
-generator_param["pre_post_frame"] = 30
+generator_param["pre_post_frame"] = 15
 generator_param["pre_post_omission"] = 0
 generator_param[
     "steps_per_epoch"
 ] = -1  # No steps necessary for inference as epochs are not relevant. -1 deactivate it.
 
-generator_param["train_path"] = "/Users/danielle/Documents/Masters/DP_Test/Data/A0_Ch0_16-44-59.mat"
+generator_param["train_path"] = "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-2/PreProcess/A0_Ch0/A0_Ch0_10-51-58.mat"
 #os.path.join(
     #pathlib.Path(__file__).parent.absolute(),
     #"..",
@@ -36,14 +36,14 @@ inferrence_param["name"] = "core_inferrence"
 # Replace this path to where you stored your model
 inferrence_param[
     "model_path"
-] = "/Users/danielle/Documents/Masters/DP_Test/pre-trained models/2019_09_11_23_32_unet_single_1024_mean_absolute_error_Ai148-0450.h5"
+] = "/projectnb/jchenlab/trained_models/2021_02_04_14_57_unet_single_1024_mean_absolute_error_2021_02_04_14_57_model.h5"
 
 # Replace this path to where you want to store your output file
 inferrence_param[
     "output_file"
-] = "/Users/danielle/Documents/Masters/DP_Test/Jan_27/ophys_tiny_continuous_deep_interpolation_pr012_mat_file.h5"
+] = "/projectnb/jchenlab/trained_models/ophys_tiny_continuous_deep_interpolation_pr012-2_mat_file.h5"
 
-jobdir = "/Users/danielle/Documents/Masters/DP_Test/Jan_27/"
+jobdir = "/projectnb/jchenlab/trained_models/"
 
 try:
     os.mkdir(jobdir)
