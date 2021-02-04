@@ -24,7 +24,7 @@ generator_param["train_path"] = "/net/claustrum2/mnt/data/Projects/Perirhinal/An
 
 generator_param["batch_size"] = 5
 generator_param["start_frame"] = 0
-generator_param["end_frame"] = 395  # -1 to go until the end.
+generator_param["end_frame"] = 281  # -1 to go until the end.
 generator_param[
     "randomize"
 ] = 0  # This is important to keep the order and avoid the randomization used during training
