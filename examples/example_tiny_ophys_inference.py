@@ -36,7 +36,7 @@ inferrence_param["name"] = "core_inferrence"
 # Replace this path to where you stored your model
 inferrence_param[
     "model_path"
-] = "/projectnb/jchenlab/trained_models/2021_02_04_14_57_unet_single_1024_mean_absolute_error_2021_02_04_14_57_model.h5"
+] = "/projectnb/jchenlab/trained_models/unet_single_1024_mean_absolute_error_2021_02_04_14_57_2021_02_04_14_57/2021_02_04_14_57_unet_single_1024_mean_absolute_error_2021_02_04_14_57_model.h5"
 
 # Replace this path to where you want to store your output file
 inferrence_param[
