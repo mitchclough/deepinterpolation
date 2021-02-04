@@ -21,5 +21,6 @@ module load tensorflow/2.0.0
 
 cd /usr3/bustaff/dlamay/deepinterpolation/examples/
 
+python setup.py  install
 
 python example_tiny_ophys_inference.py
