@@ -1,3 +1,7 @@
+import tensorflow as tf
+# Allow soft placement so your job runs on the assigned GPU.
+tf.config.set_soft_device_placement(True)
+
 import deepinterpolation as de
 import sys
 from shutil import copyfile
@@ -32,8 +36,9 @@ generator_test_param["randomize"] = 0
 
 local_train_path = '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0'
 #train_paths = os.listdir(local_train_path)
-train_paths = [f for f in os.listdir(local_train_path) if os.path.isfile(os.path.join(local_train_path, f)) if not f.startswith('.')]
-
+#train_paths = [f for f in os.listdir(local_train_path) if os.path.isfile(os.path.join(local_train_path, f)) if not f.startswith('.')]
+import glob
+train_paths = glob.glob(os.path.join(local_train_path,'*.mat'))
 #local_train_paths = ['/Volumes/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0', '/Volumes/data/Projects/Perirhinal/Animals/pr012/2P/pr012-2/PreProcess/A0_Ch0']
 
 #train_paths = []
@@ -49,7 +54,8 @@ for indiv_path in train_paths:
     generator_param["type"] = "generator"
     generator_param["name"] = "SingleTifGenerator"
     generator_param["pre_post_frame"] = 15
-    generator_param["train_path"] = os.path.join(local_train_path, indiv_path)
+    #generator_param["train_path"] = os.path.join(local_train_path, indiv_path)
+    generator_param["train_path"] = indiv_path
     generator_param["batch_size"] = 5
     generator_param["start_frame"] = 5
     generator_param["end_frame"] = 100
