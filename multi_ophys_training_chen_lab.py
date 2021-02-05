@@ -34,7 +34,8 @@ generator_test_param["end_frame"] = 276
 generator_test_param["steps_per_epoch"] = steps_per_epoch
 generator_test_param["randomize"] = 0
 
-local_train_path = '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0'
+#local_train_path = '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0'
+local_train_path = os.path.join(os.environ['TMPDIR'],A0_Ch0)
 #train_paths = os.listdir(local_train_path)
 #train_paths = [f for f in os.listdir(local_train_path) if os.path.isfile(os.path.join(local_train_path, f)) if not f.startswith('.')]
 import glob
