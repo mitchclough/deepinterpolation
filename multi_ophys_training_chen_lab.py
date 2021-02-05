@@ -152,13 +152,13 @@ json_obj.save_json(path_test_generator)
 #json_obj = JsonSaver(network_param)
 #json_obj.save_json(path_network)
 
-generator_obj = ClassLoader(path_generator)
+#generator_obj = ClassLoader(path_generator)
 generator_test_obj = ClassLoader(path_test_generator)
 
 #network_obj = ClassLoader(path_network)
 trainer_obj = ClassLoader(path_training)
 
-train_generator = generator_obj.find_and_build()(path_generator)
+#train_generator = generator_obj.find_and_build()(path_generator)
 
 global_train_generator = de.generator_collection.CollectorGenerator(
     list_train_generator
