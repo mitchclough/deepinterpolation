@@ -37,9 +37,10 @@ generator_test_param["randomize"] = 0
 local_train_path = '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0'
 #local_train_path = os.path.join(os.environ['TMPDIR'],'A0_Ch0')
 #train_paths = os.listdir(local_train_path)
-#train_paths = [f for f in os.listdir(local_train_path) if os.path.isfile(os.path.join(local_train_path, f)) if not f.startswith('.')]
 import glob
 train_paths = glob.glob(os.path.join(local_train_path,'*.mat'))
+
+# Use these lines to add different sessions/animals
 #local_train_paths = ['/Volumes/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0', '/Volumes/data/Projects/Perirhinal/Animals/pr012/2P/pr012-2/PreProcess/A0_Ch0']
 
 #train_paths = []
@@ -55,7 +56,6 @@ for indiv_path in train_paths:
     generator_param["type"] = "generator"
     generator_param["name"] = "SingleTifGenerator"
     generator_param["pre_post_frame"] = 30
-    #generator_param["train_path"] = os.path.join(local_train_path, indiv_path)
     generator_param["train_path"] = indiv_path
     generator_param["batch_size"] = 5
     generator_param["start_frame"] = 5
@@ -70,12 +70,14 @@ network_param["type"] = "network"
 network_param["name"] = "unet_single_1024"
 
 training_param["type"] = "trainer"
-#training_param["name"] = "core_trainer"
-training_param["name"] = "transfer_trainer"
+training_param["name"] = "core_trainer"
+
+#FOR TRANSFER TRAINING
+#training_param["name"] = "transfer_trainer"
 # Change this path to any model you wish to improve
-training_param[
-    "model_path"
-] = r"/usr3/bustaff/dlamay/deepinterpolation/2019_09_11_23_32_unet_single_1024_mean_absolute_error_Ai148-0450.h5"
+#training_param[
+    #"model_path"
+#] = r"/usr3/bustaff/dlamay/deepinterpolation/2019_09_11_23_32_unet_single_1024_mean_absolute_error_Ai148-0450.h5"
 
 training_param["run_uid"] = run_uid
 training_param["batch_size"] = generator_test_param["batch_size"]
@@ -120,10 +122,7 @@ json_obj.save_json(path_training)
 
 list_train_generator = []
 for local_index, indiv_generator in enumerate(generator_param_list):
-    #if local_index == 0 :
-        #indiv_generator["initialize_list"] = 1
-    #else:
-        #indiv_generator["initialize_list"] = 0
+
 
     path_generator = os.path.join(jobdir, "generator" + str(local_index) + ".json")
     json_obj = JsonSaver(indiv_generator)
@@ -131,14 +130,6 @@ for local_index, indiv_generator in enumerate(generator_param_list):
     generator_obj = ClassLoader(path_generator)
     train_generator = generator_obj.find_and_build()(path_generator)
 
-    # we don't need to set a random set of points for all 100 or so
-    #if local_index == 0 :
-        #keep_generator = train_generator
-    #else:
-        #train_generator.x_list = keep_generator.x_list
-        #train_generator.y_list = keep_generator.y_list
-        #train_generator.z_list = keep_generator.z_list
-        #train_generator.t_list = keep_generator.t_list
 
 
     list_train_generator.append(train_generator)
@@ -148,17 +139,17 @@ path_test_generator = os.path.join(jobdir, "test_generator.json")
 json_obj = JsonSaver(generator_test_param)
 json_obj.save_json(path_test_generator)
 
-#path_network = os.path.join(jobdir, "network.json")
-#json_obj = JsonSaver(network_param)
-#json_obj.save_json(path_network)
+path_network = os.path.join(jobdir, "network.json")
+json_obj = JsonSaver(network_param)
+json_obj.save_json(path_network)
 
-#generator_obj = ClassLoader(path_generator)
+generator_obj = ClassLoader(path_generator)
 generator_test_obj = ClassLoader(path_test_generator)
 
-#network_obj = ClassLoader(path_network)
+network_obj = ClassLoader(path_network)
 trainer_obj = ClassLoader(path_training)
 
-#train_generator = generator_obj.find_and_build()(path_generator)
+train_generator = generator_obj.find_and_build()(path_generator)
 
 global_train_generator = de.generator_collection.CollectorGenerator(
     list_train_generator
@@ -166,16 +157,16 @@ global_train_generator = de.generator_collection.CollectorGenerator(
 
 test_generator = generator_test_obj.find_and_build()(path_test_generator)
 
-#network_callback = network_obj.find_and_build()(path_network)
+network_callback = network_obj.find_and_build()(path_network)
 
-#training_class = trainer_obj.find_and_build()(
-    #global_train_generator, test_generator, network_callback, path_training
-#)
+training_class = trainer_obj.find_and_build()(
+    global_train_generator, test_generator, network_callback, path_training
+)
 
 #for transfer training
-training_class = trainer_obj.find_and_build()(
-    global_train_generator, test_generator, path_training
-)
+#training_class = trainer_obj.find_and_build()(
+    #global_train_generator, test_generator, path_training
+#)
 
 training_class.run()
 
