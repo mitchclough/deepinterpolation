@@ -36,11 +36,10 @@ generator_test_param["randomize"] = 0
 
 local_train_path = '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0'
 #local_train_path = os.path.join(os.environ['TMPDIR'],'A0_Ch0')
-#train_paths = os.listdir(local_train_path)
 import glob
 train_paths = glob.glob(os.path.join(local_train_path,'*.mat'))
 
-# Use these lines to add different sessions/animals
+# Use the next 3 lines to add different sessions/animals
 #local_train_paths = ['/Volumes/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0', '/Volumes/data/Projects/Perirhinal/Animals/pr012/2P/pr012-2/PreProcess/A0_Ch0']
 
 #train_paths = []
@@ -72,7 +71,7 @@ network_param["name"] = "unet_single_1024"
 training_param["type"] = "trainer"
 training_param["name"] = "core_trainer"
 
-#FOR TRANSFER TRAINING
+#FOR TRANSFER TRAINING uncomment the next 4 lines
 #training_param["name"] = "transfer_trainer"
 # Change this path to any model you wish to improve
 #training_param[
@@ -163,7 +162,7 @@ training_class = trainer_obj.find_and_build()(
     global_train_generator, test_generator, network_callback, path_training
 )
 
-#for transfer training
+#for transfer training uncomment the next 3 lines
 #training_class = trainer_obj.find_and_build()(
     #global_train_generator, test_generator, path_training
 #)
