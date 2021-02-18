@@ -686,6 +686,13 @@ class SingleTifGenerator(DeepGenerator):
         else:
             self.end_frame = self.json_data["end_frame"]
 
+        # This is used to limit the total number of samples
+        # -1 means to take all and is the default fall back
+        if "total_samples" in self.json_data.keys():
+            self.total_samples = self.json_data["total_samples"]
+        else:
+            self.total_samples = -1
+
 
         #with tifffile.TiffFile(self.raw_data_file) as tif:
             #self.raw_data = tif.asarray()
@@ -718,6 +725,10 @@ class SingleTifGenerator(DeepGenerator):
 
         if self.randomize:
             np.random.shuffle(self.list_samples)
+
+        # We cut the number of samples if asked to
+        if self.total_samples > 0 and self.total_samples < len(self.list_samples):
+            self.list_samples = self.list_samples[0 : self.total_samples]
 
     def __len__(self):
         "Denotes the total number of batches"
