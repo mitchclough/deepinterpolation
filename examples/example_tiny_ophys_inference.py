@@ -8,7 +8,7 @@ inferrence_param = {}
 # We are reusing the data generator for training here.
 generator_param["type"] = "generator"
 generator_param["name"] = "SingleTifGenerator"
-generator_param["pre_post_frame"] = 15
+generator_param["pre_post_frame"] = 30
 generator_param["pre_post_omission"] = 0
 generator_param[
     "steps_per_epoch"
