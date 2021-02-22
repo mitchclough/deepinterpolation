@@ -19,8 +19,8 @@ pip install --user s3fs
 module load tensorflow/2.0.0
 
 
-cd /usr3/bustaff/dlamay/deepinterpolation/examples/
+cd /usr3/bustaff/dlamay/deepinterpolation/
 
 python setup.py  install
 
-python cProfile example_tiny_ophys_inference.py
+python -m cProfile example_tiny_ophys_inference.py
