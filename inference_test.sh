@@ -23,4 +23,4 @@ python setup.py  install
 cd /usr3/bustaff/dlamay/deepinterpolation/examples
 
 
-python -m cProfile example_tiny_ophys_inference.py
+python -m cProfile example_tiny_ophys_inference_2.py
