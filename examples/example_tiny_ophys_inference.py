@@ -14,7 +14,7 @@ generator_param[
     "steps_per_epoch"
 ] = -1  # No steps necessary for inference as epochs are not relevant. -1 deactivate it.
 
-generator_param["train_path"] = "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0/A0_Ch0_16-44-59.mat"
+generator_param["train_path"] = "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-39/PreProcess/A0_Ch0/A0_Ch0_13-55-52.mat"
 #os.path.join(
     #pathlib.Path(__file__).parent.absolute(),
     #"..",
