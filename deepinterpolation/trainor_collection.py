@@ -64,6 +64,22 @@ class core_trainer:
         self.nb_gpus = json_data["nb_gpus"]
         self.period_save = json_data["period_save"]
         self.learning_rate = json_data["learning_rate"]
+
+        if 'checkpoints_dir' in json_data.keys():
+            self.checkpoints_dir = json_data["checkpoints_dir"]
+        else:
+            self.checkpoints_dir = self.output_dir
+
+        if "use_multiprocessing" in json_data.keys():
+            self.use_multiprocessing = json_data["use_multiprocessing"]
+        else:
+            self.use_multiprocessing = True
+
+        if "caching_validation" in json_data.keys():
+            self.caching_validation = json_data["caching_validation"]
+        else:
+            self.caching_validation = True
+
         self.output_model_file_path = os.path.join(
             self.output_dir,
             self.run_uid + "_" + self.model_string + "_model.h5"
@@ -126,8 +142,9 @@ class core_trainer:
         self.loss = lc.loss_selector(self.loss_type)
 
     def initialize_callbacks(self):
+
         checkpoint_path = os.path.join(
-            self.output_dir,
+            self.checkpoints_dir,
             self.run_uid + "_" + self.model_string +
             "-{epoch:04d}-{val_loss:.4f}.h5",
         )
@@ -210,7 +227,9 @@ class core_trainer:
 
     def run(self):
         # we first cache the validation data
-        self.cache_validation()
+        if self.caching_validation:
+            self.cache_validation()
+
         if self.steps_per_epoch > 0:
             self.model_train = self.local_model.fit(
                 self.local_generator,
@@ -220,7 +239,7 @@ class core_trainer:
                 max_queue_size=32,
                 workers=self.workers,
                 shuffle=False,
-                use_multiprocessing=True,
+                use_multiprocessing=self.use_multiprocessing,
                 callbacks=self.callbacks_list,
                 initial_epoch=0,
             )
@@ -245,7 +264,7 @@ class core_trainer:
             # save losses
 
             save_loss_path = os.path.join(
-                self.output_dir,
+                self.checkpoints_dir,
                 self.run_uid + "_" + self.model_string + "_loss.npy"
             )
             np.save(save_loss_path, loss)
@@ -257,7 +276,7 @@ class core_trainer:
             val_loss = self.model_train.history["val_loss"]
 
             save_val_loss_path = os.path.join(
-                self.output_dir,
+                self.checkpoints_dir,
                 self.run_uid + "_" + self.model_string + "_val_loss.npy"
             )
             np.save(save_val_loss_path, val_loss)
@@ -291,7 +310,7 @@ class core_trainer:
             plt.ylabel("training loss")
             plt.legend()
             save_hist_path = os.path.join(
-                self.output_dir,
+                self.checkpoints_dir,
                 self.run_uid + "_" + self.model_string + "_losses.png"
             )
             plt.savefig(save_hist_path)
@@ -348,6 +367,21 @@ class transfer_trainer(core_trainer):
         else:
             self.workers = 16
 
+        if "caching_validation" in json_data.keys():
+            self.caching_validation = json_data["caching_validation"]
+        else:
+            self.caching_validation = True
+
+        if "use_multiprocessing" in json_data.keys():
+            self.use_multiprocessing = json_data["use_multiprocessing"]
+        else:
+            self.use_multiprocessing = True
+
+        if 'checkpoints_dir' in json_data.keys():
+            self.checkpoints_dir = json_data["checkpoints_dir"]
+        else:
+            self.checkpoints_dir = self.output_dir
+
         # These parameters are related to setting up the
         # behavior of learning rates
         self.apply_learning_decay = json_data["apply_learning_decay"]
@@ -390,17 +424,77 @@ class transfer_trainer(core_trainer):
 
         # For transfer learning, knowing the
         # baseline validation loss is important
-        baseline_val_loss = self.local_model.evaluate(
+        self.baseline_val_loss = self.local_model.evaluate(
             self.local_test_generator)
-
-        # save init losses
-        save_loss_path = os.path.join(
-            self.output_dir,
-            self.run_uid + "_" + self.model_string + "init_val_loss.npy",
-        )
-        np.save(save_loss_path, baseline_val_loss)
 
     def initialize_network(self):
         self.local_model = load_model(
             self.model_path
         )
+
+    def finalize(self):
+        draw_plot = True
+
+        # save init losses
+        save_loss_path = os.path.join(
+            self.checkpoints_dir,
+            self.run_uid + "_" + self.model_string + "init_val_loss.npy",
+        )
+        np.save(save_loss_path, self.baseline_val_loss)
+
+        if "loss" in self.model_train.history.keys():
+            loss = self.model_train.history["loss"]
+            # save losses
+
+            save_loss_path = os.path.join(
+                self.checkpoints_dir,
+                self.run_uid + "_" + self.model_string + "_loss.npy"
+            )
+            np.save(save_loss_path, loss)
+        else:
+            print("Loss data was not present")
+            draw_plot = False
+
+        if "val_loss" in self.model_train.history.keys():
+            val_loss = self.model_train.history["val_loss"]
+
+            save_val_loss_path = os.path.join(
+                self.checkpoints_dir,
+                self.run_uid + "_" + self.model_string + "_val_loss.npy"
+            )
+            np.save(save_val_loss_path, val_loss)
+        else:
+            print("Val. loss data was not present")
+            draw_plot = False
+
+        # save model
+        self.local_model.save(self.output_model_file_path)
+
+        print("Saved model to disk")
+
+        if draw_plot:
+            h = plt.figure()
+            plt.plot(loss, label="loss " + self.run_uid)
+            plt.plot(val_loss, label="val_loss " + self.run_uid)
+
+            if self.steps_per_epoch > 0:
+                plt.xlabel(
+                    "number of epochs ("
+                    + str(self.batch_size * self.steps_per_epoch)
+                    + " samples/epochs)"
+                )
+            else:
+                plt.xlabel(
+                    "number of epochs ("
+                    + str(self.batch_size * len(self.local_generator))
+                    + " samples/epochs)"
+                )
+
+            plt.ylabel("training loss")
+            plt.legend()
+            save_hist_path = os.path.join(
+                self.checkpoints_dir,
+                self.run_uid + "_" + self.model_string + "_losses.png"
+            )
+            plt.savefig(save_hist_path)
+            plt.close(h)
