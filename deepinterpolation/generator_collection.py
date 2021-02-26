@@ -753,8 +753,6 @@ class MultiContinuousTifGenerator(DeepGenerator):
         for indiv_tif in self.list_tif_files:
 
 
-
-
             with tifffile.TiffFile(indiv_tif) as tif:
                 #For Mat files
                 mat_file = loadmat(self.raw_data_file)['motion_corrected']
