@@ -752,14 +752,16 @@ class MultiContinuousTifGenerator(DeepGenerator):
         self.list_bounds = [0]
         for indiv_tif in self.list_tif_files:
 
-            #For Mat files
-            #mat_file = loadmat(self.raw_data_file)['motion_corrected']
-            #mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 1, 2))
-            #mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 0, 1))
-            #self.raw_data = np.pad(mat_file, [(0, 0), (56, 56), (26, 26)], mode='constant')
+
+
 
             with tifffile.TiffFile(indiv_tif) as tif:
-                local_raw_data = tif.asarray()
+                #For Mat files
+                mat_file = loadmat(self.raw_data_file)['motion_corrected']
+                mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 1, 2))
+                mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 0, 1))
+                local_raw_data = np.pad(mat_file, [(0, 0), (56, 56), (26, 26)], mode='constant')
+                #local_raw_data = tif.asarray()
                 self.list_raw_data.append(local_raw_data)
                 self.total_frame_per_movie += local_raw_data.shape[0]
                 self.list_bounds.append(self.total_frame_per_movie)
