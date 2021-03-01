@@ -37,15 +37,15 @@ generator_test_param["randomize"] = 0
 local_train_path = '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0'
 #local_train_path = os.path.join(os.environ['TMPDIR'],'A0_Ch0')
 import glob
-train_paths = glob.glob(os.path.join(local_train_path,'*.mat'))
+#train_paths = glob.glob(os.path.join(local_train_path,'*.mat'))
 
 # Use the next 3 lines to add different sessions/animals
-#local_train_paths = ['/Volumes/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0', '/Volumes/data/Projects/Perirhinal/Animals/pr012/2P/pr012-2/PreProcess/A0_Ch0']
+local_train_paths = ['/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0', '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-39/PreProcess/A0_Ch0']
 
-#train_paths = []
+train_paths = []
 
-#for local_train_path in local_train_paths:
-    #train_paths.extend([f for f in os.listdir(local_train_path) if os.path.isfile(os.path.join(local_train_path, f)) if not f.startswith('.')])
+for local_train_path in local_train_paths:
+    train_paths.extend([f for f in glob.glob(os.path.join(local_train_path,'*.mat')))
 
 generator_param_list = []
 for indiv_path in train_paths:
