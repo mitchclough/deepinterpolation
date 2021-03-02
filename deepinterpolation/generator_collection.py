@@ -185,24 +185,16 @@ class OnePGenerator(DeepGenerator):
         # local_raw_data = h5py.File(self.raw_data_file, 'r')['1']
 
         input_full = np.zeros(
-<<<<<<< HEAD
-            [1, self.movie_size[1], self.movie_size[2], self.pre_post_frame * 2]
-=======
             [1,
              self.movie_size[1],
              self.movie_size[2],
              self.pre_frame + self.post_frame]
->>>>>>> upstream/master
         )
         output_full = np.zeros([1, self.movie_size[1], self.movie_size[2], 1])
 
         input_index = np.arange(
-<<<<<<< HEAD
-            index_frame - self.pre_post_frame, index_frame + self.pre_post_frame + 1
-=======
             index_frame - self.pre_frame,
             index_frame + self.post_frame + 1
->>>>>>> upstream/master
         )
         input_index = input_index[input_index != index_frame]
 
