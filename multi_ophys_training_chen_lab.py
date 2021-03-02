@@ -46,7 +46,7 @@ generator_test_param["randomize"] = 0
 
 train_paths = []
 
-with open('/net/claustrum2/mnt/data/Projects/deepinterpolation/train_paths.csv','r') as csv_file:
+with open('/net/claustrum2/mnt/data/Projects/Perirhinal/deepinterpolation/train_paths.csv','r') as csv_file:
     for a in csv.reader(csv_file, delimiter=','):
         train_paths.append(a[0])
 
