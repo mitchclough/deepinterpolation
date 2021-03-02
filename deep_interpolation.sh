@@ -21,12 +21,9 @@ module load python3
 pip install --user s3fs
 module load tensorflow/2.0.0
 
-cd /net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/
-chmod -R 775 trained_models
 
 cd /usr3/bustaff/dlamay/deepinterpolation/
-
-cp -r /net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/ $TMPDIR
+S
 
 python setup.py  install
 
