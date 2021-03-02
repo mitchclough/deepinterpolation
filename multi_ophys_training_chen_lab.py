@@ -9,6 +9,8 @@ import os
 from deepinterpolation.generic import JsonSaver, ClassLoader
 import datetime
 from typing import Any, Dict
+import glob
+import csv
 
 now = datetime.datetime.now()
 run_uid = now.strftime("%Y_%m_%d_%H_%M")
@@ -18,7 +20,7 @@ generator_param = {}
 network_param = {}
 generator_test_param = {}
 
-steps_per_epoch = 10
+steps_per_epoch = 20
 
 generator_test_param["type"] = "generator"
 generator_test_param["name"] = "SingleTifGenerator"
@@ -34,18 +36,22 @@ generator_test_param["end_frame"] = 276
 generator_test_param["steps_per_epoch"] = steps_per_epoch
 generator_test_param["randomize"] = 0
 
-local_train_path = '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0'
+#local_train_path = '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0'
 #local_train_path = os.path.join(os.environ['TMPDIR'],'A0_Ch0')
-import glob
+
 #train_paths = glob.glob(os.path.join(local_train_path,'*.mat'))
 
 # Use the next 3 lines to add different sessions/animals
-local_train_paths = ['/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0', '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-39/PreProcess/A0_Ch0']
+#local_train_paths = []
 
 train_paths = []
 
-for local_train_path in local_train_paths:
-    train_paths.extend([f for f in glob.glob(os.path.join(local_train_path,'*.mat')))
+with open('/net/claustrum2/mnt/data/Projects/Perirhinal/train_paths.csv','r') as csv_file:
+    for a in csv.reader(csv_file, delimiter=','):
+        train_paths.append(a[0])
+
+#for local_train_path in local_train_paths:
+    #train_paths.extend([f for f in glob.glob(os.path.join(local_train_path,'*.mat')))
 
 generator_param_list = []
 for indiv_path in train_paths:
