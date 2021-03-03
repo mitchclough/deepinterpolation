@@ -20,7 +20,7 @@ generator_param = {}
 network_param = {}
 generator_test_param = {}
 
-steps_per_epoch = 20
+steps_per_epoch = 10
 
 generator_test_param["type"] = "generator"
 generator_test_param["name"] = "SingleTifGenerator"
@@ -54,7 +54,7 @@ with open('/net/claustrum2/mnt/data/Projects/Perirhinal/deepinterpolation/train_
     #train_paths.extend([f for f in glob.glob(os.path.join(local_train_path,'*.mat')))
 
 generator_param_list = []
-for indiv_path in train_paths:
+for indiv_path in train_paths[:10]:
 
     generator_param = {}
 
