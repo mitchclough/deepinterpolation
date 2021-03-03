@@ -948,7 +948,10 @@ class SingleTifGenerator(DeepGenerator):
         mat_file = loadmat(self.raw_data_file)['motion_corrected']
         mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 1, 2))
         mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 0, 1))
-        self.raw_data = np.pad(mat_file, [(0, 0), (56, 56), (26, 26)], mode='constant')
+        a = int((512-mat_file.shape[1])/2)
+        b = int((512-mat_file.shape[2])/2)
+        self.raw_data = np.pad(mat_file, [(0, 0), (a, a), (b, b)], mode='constant')
+
 
 
         if "randomize" in self.json_data.keys():
