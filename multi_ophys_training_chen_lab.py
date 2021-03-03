@@ -97,7 +97,7 @@ training_param["loss"] = "mean_absolute_error"
 training_param[
     "nb_workers"
 ] = 16
-training_param["caching_validation"=False
+training_param["caching_validation"]=False
 
 training_param["model_string"] = (
     network_param["name"]
