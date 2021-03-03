@@ -952,7 +952,10 @@ class SingleTifGenerator(DeepGenerator):
         b = int((512-mat_file.shape[2])/2)
         self.raw_data = np.pad(mat_file, [(0, 0), (a, a), (b, b)], mode='constant')
 
-        
+        #For adding zeros before and after
+        #z = np.zeros([30, 512, 512])
+        #self.raw_data = np.concatenate([z, self.raw_data, z], 0)
+
 
 
 
