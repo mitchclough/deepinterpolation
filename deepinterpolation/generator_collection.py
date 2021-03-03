@@ -952,6 +952,8 @@ class SingleTifGenerator(DeepGenerator):
         b = int((512-mat_file.shape[2])/2)
         self.raw_data = np.pad(mat_file, [(0, 0), (a, a), (b, b)], mode='constant')
 
+        
+
 
 
         if "randomize" in self.json_data.keys():
