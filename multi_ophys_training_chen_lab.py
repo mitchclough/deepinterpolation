@@ -75,14 +75,14 @@ network_param["type"] = "network"
 network_param["name"] = "unet_single_1024"
 
 training_param["type"] = "trainer"
-training_param["name"] = "core_trainer"
+#training_param["name"] = "core_trainer"
 
 #FOR TRANSFER TRAINING uncomment the next 4 lines
-#training_param["name"] = "transfer_trainer"
-# Change this path to any model you wish to improve
-#training_param[
-    #"model_path"
-#] = r"/usr3/bustaff/dlamay/deepinterpolation/2019_09_11_23_32_unet_single_1024_mean_absolute_error_Ai148-0450.h5"
+training_param["name"] = "transfer_trainer"
+Change this path to any model you wish to improve
+training_param[
+    "model_path"
+] = r"/usr3/bustaff/dlamay/deepinterpolation/2019_09_11_23_32_unet_single_1024_mean_absolute_error_Ai148-0450.h5"
 
 training_param["run_uid"] = run_uid
 training_param["batch_size"] = generator_test_param["batch_size"]
