@@ -139,14 +139,14 @@ path_test_generator = os.path.join(jobdir, "test_generator.json")
 json_obj = JsonSaver(generator_test_param)
 json_obj.save_json(path_test_generator)
 
-path_network = os.path.join(jobdir, "network.json")
-json_obj = JsonSaver(network_param)
-json_obj.save_json(path_network)
+#path_network = os.path.join(jobdir, "network.json")
+#json_obj = JsonSaver(network_param)
+#json_obj.save_json(path_network)
 
 generator_obj = ClassLoader(path_generator)
 generator_test_obj = ClassLoader(path_test_generator)
 
-network_obj = ClassLoader(path_network)
+#network_obj = ClassLoader(path_network)
 trainer_obj = ClassLoader(path_training)
 
 train_generator = generator_obj.find_and_build()(path_generator)
@@ -157,7 +157,7 @@ global_train_generator = de.generator_collection.CollectorGenerator(
 
 test_generator = generator_test_obj.find_and_build()(path_test_generator)
 
-network_callback = network_obj.find_and_build()(path_network)
+#network_callback = network_obj.find_and_build()(path_network)
 
 training_class = trainer_obj.find_and_build()(
     global_train_generator, test_generator, path_training
