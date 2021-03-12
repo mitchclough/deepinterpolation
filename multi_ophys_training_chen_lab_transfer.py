@@ -87,14 +87,14 @@ training_param["apply_learning_decay"] = 0
 training_param["pre_post_frame"] = generator_test_param["pre_post_frame"]
 training_param["nb_times_through_data"] = 1
 training_param["learning_rate"] = 0.0005
-training_param["loss"] = "mean_absolute_error"
+training_param["loss"] = "mean_absolute_error"   #change to mean_squared_error for L2 low SNR
 training_param[
     "nb_workers"
 ] = 16
 training_param["caching_validation"]=False
 
 training_param["model_string"] = (
-    network_param["name"]
+    "transfer"
     + "_"
     + training_param["loss"]
     + "_"
@@ -160,13 +160,8 @@ test_generator = generator_test_obj.find_and_build()(path_test_generator)
 network_callback = network_obj.find_and_build()(path_network)
 
 training_class = trainer_obj.find_and_build()(
-    global_train_generator, test_generator, network_callback, path_training
+    global_train_generator, test_generator, path_training
 )
-
-#for transfer training uncomment the next 3 lines
-#training_class = trainer_obj.find_and_build()(
-    #global_train_generator, test_generator, path_training
-#)
 
 training_class.run()
 
