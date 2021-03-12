@@ -29,7 +29,7 @@ generator_test_param['pre_post_omission'] = 1
 
 generator_test_param[
     "train_path"
-] = "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-2/PreProcess/A0_Ch0/A0_Ch0_10-51-58.mat"
+] = "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-4/PreProcess/A1_Ch0/A1_Ch0_11-03-57.mat"
 generator_test_param["batch_size"] = 5
 generator_test_param["start_frame"] = 0
 generator_test_param["end_frame"] = 276
