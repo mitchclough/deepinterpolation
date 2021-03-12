@@ -953,197 +953,6 @@ class SingleTifGenerator(DeepGenerator):
         self.raw_data = np.pad(mat_file, [(0, 0), (a, a), (b, b)], mode='constant')
 
         #For adding zeros before and after
-        import random
-        num = random.randint(0,9)
-        if num==9:
-            z = np.zeros([30, 512, 512])
-            self.raw_data = np.concatenate([z, self.raw_data, z], 0)
-
-
-
-
-        if "randomize" in self.json_data.keys():
-            self.randomize = self.json_data["randomize"]
-        else:
-            self.randomize = 1
-
-        # This is compatible with negative frames
-        if self.json_data["end_frame"] > self.raw_data.shape[0]:
-            self.end_frame = self.raw_data.shape[0]
-        else:
-            self.end_frame = self.json_data["end_frame"]
-
-        # This is used to limit the total number of samples
-        # -1 means to take all and is the default fall back
-        if "total_samples" in self.json_data.keys():
-            self.total_samples = self.json_data["total_samples"]
-        else:
-            self.total_samples = -1
-
-
-        #with tifffile.TiffFile(self.raw_data_file) as tif:
-            #self.raw_data = tif.asarray()
-
-        self.total_frame_per_movie = self.raw_data.shape[0]
-
-        if self.end_frame < 0:
-            self.img_per_movie = (
-                self.total_frame_per_movie + 1 + self.end_frame - self.start_frame
-            )
-        elif self.total_frame_per_movie < self.end_frame:
-            self.img_per_movie = self.total_frame_per_movie + 1 - self.start_frame
-        else:
-            self.img_per_movie = self.end_frame + 1 - self.start_frame
-
-        average_nb_samples = 1000
-
-        local_data = self.raw_data[0:average_nb_samples, :, :].flatten()
-        local_data = local_data.astype("float32")
-        self.local_mean = np.mean(local_data)
-        self.local_std = np.std(local_data)
-        self.epoch_index = 0
-
-        self.list_samples = np.arange(
-            self.pre_frame + self.pre_post_omission + self.start_frame,
-            self.start_frame
-            + self.img_per_movie
-            - self.post_frame
-            - self.pre_post_omission,
-        )
-
-        if self.randomize:
-            np.random.shuffle(self.list_samples)
-
-        # We cut the number of samples if asked to
-        if self.total_samples > 0 and self.total_samples < len(self.list_samples):
-            self.list_samples = self.list_samples[0 : self.total_samples]
-
-    def __len__(self):
-        "Denotes the total number of batches"
-        return int(np.floor(float(len(self.list_samples)) / self.batch_size))
-
-    def on_epoch_end(self):
-        # We only increase index if steps_per_epoch is set
-        # to positive value. -1 will force the generator
-        # to not iterate at the end of each epoch
-        if self.steps_per_epoch > 0:
-            if self.steps_per_epoch * (self.epoch_index + 2) < self.__len__():
-                self.epoch_index = self.epoch_index + 1
-            else:
-                # if we reach the end of the data, we roll over
-                self.epoch_index = 0
-
-
-    def __getitem__(self, index):
-        if self.steps_per_epoch > 0:
-            index = index + self.steps_per_epoch * self.epoch_index
-        # Generate indexes of the batch
-        if (index + 1) * self.batch_size > self.total_frame_per_movie:
-            indexes = np.arange(index * self.batch_size, self.img_per_movie)
-        else:
-            indexes = np.arange(index * self.batch_size, (index + 1) * self.batch_size)
-
-        shuffle_indexes = self.list_samples[indexes]
-
-        input_full = np.zeros(
-            [
-                self.batch_size,
-                self.raw_data.shape[1],
-                self.raw_data.shape[2],
-                self.pre_frame + self.post_frame,
-            ],
-            dtype="float32",
-        )
-        output_full = np.zeros(
-            [self.batch_size, self.raw_data.shape[1], self.raw_data.shape[2], 1],
-            dtype="float32",
-        )
-
-        for batch_index, frame_index in enumerate(shuffle_indexes):
-            X, Y = self.__data_generation__(frame_index)
-
-            input_full[batch_index, :, :, :] = X
-            output_full[batch_index, :, :, :] = Y
-
-        return input_full, output_full
-
-    def __data_generation__(self, index_frame):
-        # X : (n_samples, *dim, n_channels)
-        "Generates data containing batch_size samples"
-
-        input_full = np.zeros(
-            [
-                1,
-                self.raw_data.shape[1],
-                self.raw_data.shape[2],
-                self.pre_frame + self.post_frame,
-            ],
-            dtype="float32",
-        )
-        output_full = np.zeros(
-            [1, self.raw_data.shape[1], self.raw_data.shape[2], 1], dtype="float32"
-        )
-
-        input_index = np.arange(
-            index_frame - self.pre_frame - self.pre_post_omission,
-            index_frame + self.post_frame + self.pre_post_omission + 1,
-        )
-        input_index = input_index[input_index != index_frame]
-
-        for index_padding in np.arange(self.pre_post_omission + 1):
-            input_index = input_index[input_index != index_frame - index_padding]
-            input_index = input_index[input_index != index_frame + index_padding]
-
-        data_img_input = self.raw_data[input_index, :, :]
-        data_img_output = self.raw_data[index_frame, :, :]
-
-        data_img_input = np.swapaxes(data_img_input, 1, 2)
-        data_img_input = np.swapaxes(data_img_input, 0, 2)
-
-        img_in_shape = data_img_input.shape
-        img_out_shape = data_img_output.shape
-
-        data_img_input = (
-            data_img_input.astype("float32") - self.local_mean
-        ) / self.local_std
-        data_img_output = (
-            data_img_output.astype("float32") - self.local_mean
-        ) / self.local_std
-        input_full[0, : img_in_shape[0], : img_in_shape[1], :] = data_img_input
-        output_full[0, : img_out_shape[0], : img_out_shape[1], 0] = data_img_output
-
-        return input_full, output_full
-
-class SingleTifGenerator_NoPad(DeepGenerator):
-    "Generates data for Keras"
-
-    def __init__(self, json_path):
-        "Initialization"
-        super().__init__(json_path)
-
-        self.raw_data_file = self.json_data["train_path"]
-        self.batch_size = self.json_data["batch_size"]
-
-        if "pre_post_frame" in self.json_data.keys():
-            self.pre_frame = self.json_data["pre_post_frame"]
-            self.post_frame = self.json_data["pre_post_frame"]
-        else:
-            self.pre_frame = self.json_data["pre_frame"]
-            self.post_frame = self.json_data["post_frame"]
-
-        self.pre_post_omission = self.json_data["pre_post_omission"]
-        self.start_frame = self.json_data["start_frame"]
-        self.steps_per_epoch = self.json_data["steps_per_epoch"]
-
-
-        mat_file = loadmat(self.raw_data_file)['motion_corrected']
-        mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 1, 2))
-        mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 0, 1))
-        a = int((512-mat_file.shape[1])/2)
-        b = int((512-mat_file.shape[2])/2)
-        self.raw_data = np.pad(mat_file, [(0, 0), (a, a), (b, b)], mode='constant')
-
-        #For adding zeros before and after
         #import random
         #num = random.randint(0,9)
         #if num==9:
@@ -1151,6 +960,8 @@ class SingleTifGenerator_NoPad(DeepGenerator):
             #self.raw_data = np.concatenate([z, self.raw_data, z], 0)
 
 
+
+
         if "randomize" in self.json_data.keys():
             self.randomize = self.json_data["randomize"]
         else:
@@ -1302,6 +1113,7 @@ class SingleTifGenerator_NoPad(DeepGenerator):
         output_full[0, : img_out_shape[0], : img_out_shape[1], 0] = data_img_output
 
         return input_full, output_full
+
 
 
 class OphysGenerator(DeepGenerator):
