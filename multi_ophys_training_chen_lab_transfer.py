@@ -67,7 +67,7 @@ for indiv_path in train_paths[:10]:
     generator_param["end_frame"] = 100
     generator_param["steps_per_epoch"] = steps_per_epoch
     generator_param["randomize"] = 1
-    generator_param["pre_post_omission"] = 0
+    generator_param["pre_post_omission"] = 1
 
     generator_param_list.append(generator_param)
 
