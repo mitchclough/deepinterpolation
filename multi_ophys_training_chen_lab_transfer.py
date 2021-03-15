@@ -45,26 +45,28 @@ generator_test_param["randomize"] = 0
 #local_train_paths = []
 
 train_paths = []
+frame_nums = []
 
 with open('/net/claustrum2/mnt/data/Projects/Perirhinal/deepinterpolation/train_paths.csv','r') as csv_file:
     for a in csv.reader(csv_file, delimiter=','):
         train_paths.append(a[0])
+        frame_nums.append(int(a[1]))
 
 #for local_train_path in local_train_paths:
     #train_paths.extend([f for f in glob.glob(os.path.join(local_train_path,'*.mat')))
 
 generator_param_list = []
-for indiv_path in train_paths[:10]:
+for i in range(len(train_paths)):
 
     generator_param = {}
 
     generator_param["type"] = "generator"
     generator_param["name"] = "SingleTifGenerator"
     generator_param["pre_post_frame"] = 30
-    generator_param["train_path"] = indiv_path
+    generator_param["train_path"] = train_path[i]
     generator_param["batch_size"] = 5
-    generator_param["start_frame"] = 5
-    generator_param["end_frame"] = 100
+    generator_param["start_frame"] = frame_nums[i]
+    generator_param["end_frame"] = frame_nums[i+1]
     generator_param["steps_per_epoch"] = steps_per_epoch
     generator_param["randomize"] = 1
     generator_param["pre_post_omission"] = 1
