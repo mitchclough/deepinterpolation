@@ -247,6 +247,7 @@ class CollectorGenerator(DeepGenerator):
             for index in np.arange(0, local_len):
                 self.list_samples.append({"generator": generator_index, "index": index})
                 current_count = current_count + 1
+        print(self.list_samples)
 
     def shuffle_indexes(self):
         np.random.shuffle(self.list_samples)
@@ -995,7 +996,7 @@ class SingleTifGenerator(DeepGenerator):
         else:
             self.img_per_movie = self.end_frame + 1 - self.start_frame
 
-        average_nb_samples = 1000
+        average_nb_samples = 100
 
         local_data = self.raw_data[0:average_nb_samples, :, :].flatten()
         local_data = local_data.astype("float32")
