@@ -65,7 +65,7 @@ for i in range(len(train_paths)):
     generator_param["pre_post_frame"] = 30
     generator_param["train_path"] = train_paths[i]
     generator_param["batch_size"] = 5
-    generator_param["start_frame"] = (frame_nums[i])-5
+    generator_param["start_frame"] = 0
     generator_param["end_frame"] = frame_nums[i]
     generator_param["steps_per_epoch"] = steps_per_epoch
     generator_param["randomize"] = 1
