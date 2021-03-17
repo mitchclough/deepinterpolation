@@ -89,7 +89,7 @@ training_param["apply_learning_decay"] = 0
 training_param["pre_post_frame"] = generator_test_param["pre_post_frame"]
 training_param["nb_times_through_data"] = 1
 training_param["learning_rate"] = 0.0005
-training_param["loss"] = "mean_absolute_error"   #change to mean_squared_error for L2 low SNR
+training_param["loss"] = "mean_squareroot_error"   #change to mean_squareroot_error for L2 low SNR
 training_param[
     "nb_workers"
 ] = 16
