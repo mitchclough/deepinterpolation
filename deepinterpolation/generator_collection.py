@@ -996,7 +996,7 @@ class SingleTifGenerator(DeepGenerator):
         else:
             self.img_per_movie = self.end_frame + 1 - self.start_frame
 
-        average_nb_samples = 100
+        average_nb_samples = 1000
 
         local_data = self.raw_data[0:average_nb_samples, :, :].flatten()
         local_data = local_data.astype("float32")
