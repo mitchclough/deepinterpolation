@@ -945,8 +945,10 @@ class SingleTifGenerator(DeepGenerator):
         self.start_frame = self.json_data["start_frame"]
         self.steps_per_epoch = self.json_data["steps_per_epoch"]
 
-
-        mat_file = loadmat(self.raw_data_file)['motion_corrected']
+        try:
+            mat_file = loadmat(self.raw_data_file)['motion_corrected2']
+        except:
+            mat_file = loadmat(self.raw_data_file)['motion_corrected']
         mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 1, 2))
         mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 0, 1))
         a = int((512-mat_file.shape[1])/2)
