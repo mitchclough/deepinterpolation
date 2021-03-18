@@ -59,7 +59,7 @@ generator_param_list = []
 for i in range(len(train_paths)):
 
     generator_param = {}
-
+    
     generator_param["type"] = "generator"
     generator_param["name"] = "SingleTifGenerator"
     generator_param["pre_post_frame"] = 30
