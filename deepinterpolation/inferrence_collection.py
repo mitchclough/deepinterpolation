@@ -6,7 +6,6 @@ from tensorflow.keras.models import load_model
 import deepinterpolation.loss_collection as lc
 from scipy.io.wavfile import write
 
-
 class fmri_inferrence:
     # This inferrence is specific to fMRI which is raster scanning for denoising
 
