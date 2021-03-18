@@ -1,5 +1,6 @@
 import h5py
 import numpy as np
+import scipy.io as sio
 from deepinterpolation.generic import JsonLoader
 from tensorflow.keras.models import load_model
 import deepinterpolation.loss_collection as lc
@@ -201,3 +202,9 @@ class core_inferrence:
                     + local_size,
                     :,
                 ] = corrected_data
+
+                matdata = np.ascontiguousarray(dset_out)
+                matsavedata = np.swapaxes(matdata, 0, 2)
+                matsavedata = np.swapaxes(matsavedata, 0, 1)
+                matfilename = self.output_file[0:len(self.output_file)-2] + 'mat'
+                sio.savemat(matfilename, {'data': matsavedata})
