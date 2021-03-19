@@ -18,6 +18,7 @@ class fmri_inferrence:
         self.json_data = local_json_loader.json_data
         self.output_file = self.json_data["output_file"]
         self.model_path = self.json_data["model_path"]
+        self.mat_file = self.json_data["mat_file"]
 
         # This is used when output is a full volume to select only the center
         # currently only set to true. Future implementation could make smarter scanning of the volume and leverage more
@@ -202,8 +203,10 @@ class core_inferrence:
                     :,
                 ] = corrected_data
 
+                mat_dict = sio.loadmat(self.mat_file)
                 matdata = np.ascontiguousarray(dset_out)
                 matsavedata = np.swapaxes(matdata, 0, 2)
                 matsavedata = np.swapaxes(matsavedata, 0, 1)
-                matfilename = self.output_file[0:len(self.output_file)-2] + 'mat'
-                sio.savemat(matfilename, {'data': matsavedata})
+                mat_dict["inference_data"] = matsavedata
+                #matfilename = self.output_file[0:len(self.output_file)-2] + 'mat'
+                sio.savemat(self.mat_file, mat_dict)
