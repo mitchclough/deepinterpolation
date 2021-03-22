@@ -29,10 +29,10 @@ generator_test_param['pre_post_omission'] = 1
 
 generator_test_param[
     "train_path"
-] = "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-4/PreProcess/A1_Ch0/A1_Ch0_11-03-57.mat"
+] = "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-32/PreProcess/A1_Ch0/A1_Ch0_10-56-09.mat"
 generator_test_param["batch_size"] = 5
 generator_test_param["start_frame"] = 0
-generator_test_param["end_frame"] = 360
+generator_test_param["end_frame"] = 639
 generator_test_param["steps_per_epoch"] = -1
 generator_test_param["randomize"] = 0
 
@@ -47,7 +47,7 @@ generator_test_param["randomize"] = 0
 train_paths = []
 frame_nums = []
 
-with open('/net/claustrum2/mnt/data/Projects/Perirhinal/deepinterpolation/train_paths_80.csv','r') as csv_file:
+with open('/net/claustrum2/mnt/data/Projects/Perirhinal/deepinterpolation/train_paths_80_bad.csv','r') as csv_file:
     for a in csv.reader(csv_file, delimiter=','):
         train_paths.append(a[0])
         frame_nums.append(int(a[1]))
@@ -59,7 +59,7 @@ generator_param_list = []
 for i in range(len(train_paths)):
 
     generator_param = {}
-    
+
     generator_param["type"] = "generator"
     generator_param["name"] = "SingleTifGenerator"
     generator_param["pre_post_frame"] = 30
