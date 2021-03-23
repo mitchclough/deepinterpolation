@@ -153,7 +153,7 @@ class core_inferrence:
         chunk_size = [1]
         chunk_size.extend(self.indiv_shape)
 
-        with h5py.File(self.output_file, "w") as file_handle:
+        #with h5py.File(self.output_file, "w") as file_handle:
             #dset_out = file_handle.create_dataset(
                 #"data",
                 #shape=tuple(final_shape),
@@ -161,56 +161,59 @@ class core_inferrence:
                 #dtype="float32",
             #)
 
+            #if self.save_raw:
+                #raw_out = file_handle.create_dataset(
+                    #"raw",
+                    #shape=tuple(final_shape),
+                    #chunks=tuple(chunk_size),
+                    #dtype="float32",
+                #)
+
+        dset_out = np.zeros([self.nb_datasets *self.batch_size, self.generator_obj.raw_data.shape[1], self.generator_obj.raw_data.shape[2], 1],
+        dtype="float32")
+
+        raw_out = np.zeros([self.nb_datasets *self.batch_size, self.generator_obj.raw_data.shape[1], self.generator_obj.raw_data.shape[2], 1],
+        dtype="float32")
+
+        for index_dataset in np.arange(0, self.nb_datasets, 1):
+            local_data = self.generator_obj.__getitem__(index_dataset)
+
+            predictions_data = self.model.predict(local_data[0])
+
+            local_mean, local_std = self.generator_obj.__get_norm_parameters__(
+                index_dataset
+            )
+            local_size = predictions_data.shape[0]
+
+            if self.rescale:
+                corrected_data = predictions_data * local_std + local_mean
+            else:
+                corrected_data = predictions_data
+
             if self.save_raw:
-                raw_out = file_handle.create_dataset(
-                    "raw",
-                    shape=tuple(final_shape),
-                    chunks=tuple(chunk_size),
-                    dtype="float32",
-                )
-
-            dset_out = np.zeros([self.batch_size, self.generator_obj.raw_data.shape[1], self.generator_obj.raw_data.shape[2], 1],
-            dtype="float32")
-
-            for index_dataset in np.arange(0, self.nb_datasets, 1):
-                local_data = self.generator_obj.__getitem__(index_dataset)
-
-                predictions_data = self.model.predict(local_data[0])
-
-                local_mean, local_std = self.generator_obj.__get_norm_parameters__(
-                    index_dataset
-                )
-                local_size = predictions_data.shape[0]
-
                 if self.rescale:
-                    corrected_data = predictions_data * local_std + local_mean
+                    corrected_raw = local_data[1] * local_std + local_mean
                 else:
-                    corrected_data = predictions_data
+                    corrected_raw = local_data[1]
 
-                if self.save_raw:
-                    if self.rescale:
-                        corrected_raw = local_data[1] * local_std + local_mean
-                    else:
-                        corrected_raw = local_data[1]
-
-                    raw_out[
-                        index_dataset
-                        * self.batch_size : index_dataset
-                        * self.batch_size
-                        + local_size,
-                        :,
-                    ] = corrected_raw
-
-                dset_out[
-                    index_dataset * self.batch_size : index_dataset * self.batch_size
+                raw_out[
+                    index_dataset
+                    * self.batch_size : index_dataset
+                    * self.batch_size
                     + local_size,
                     :,
-                ] = corrected_data
+                ] = corrected_raw
 
-                mat_dict = sio.loadmat(self.mat_file)
-                matdata = np.ascontiguousarray(dset_out)
-                matsavedata = np.swapaxes(matdata, 0, 2)
-                matsavedata = np.swapaxes(matsavedata, 0, 1)
-                mat_dict["inference_data"] = matsavedata
-                #matfilename = self.output_file[0:len(self.output_file)-2] + 'mat'
-                sio.savemat(self.mat_file, mat_dict)
+            dset_out[
+                index_dataset * self.batch_size : index_dataset * self.batch_size
+                + local_size,
+                :,
+            ] = corrected_data
+
+            mat_dict = sio.loadmat(self.mat_file)
+            matdata = np.ascontiguousarray(dset_out)
+            matsavedata = np.swapaxes(matdata, 0, 2)
+            matsavedata = np.swapaxes(matsavedata, 0, 1)
+            mat_dict["inference_data"] = matsavedata
+            #matfilename = self.output_file[0:len(self.output_file)-2] + 'mat'
+            sio.savemat(self.mat_file, mat_dict)
