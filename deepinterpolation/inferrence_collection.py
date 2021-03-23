@@ -125,6 +125,7 @@ class core_inferrence:
 
         self.output_file = self.json_data["output_file"]
         self.model_path = self.json_data["model_path"]
+        self.mat_file = self.json_data["mat_file"]
 
         if "save_raw" in self.json_data.keys():
             self.save_raw = self.json_data["save_raw"]
