@@ -43,7 +43,7 @@ inferrence_param[
     "output_file"
 ] = "/projectnb/jchenlab/trained_models/ophys_tiny_continuous_deep_interpolation_pr012-1_feb22.h5"
 
-inferrence_param["mat_file"] = "A0_Ch0_13-55-52.mat"
+inferrence_param["mat_file"] = generator_param["train_path"]
 
 jobdir = "/projectnb/jchenlab/trained_models/"
 
