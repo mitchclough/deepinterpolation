@@ -154,12 +154,12 @@ class core_inferrence:
         chunk_size.extend(self.indiv_shape)
 
         with h5py.File(self.output_file, "w") as file_handle:
-            dset_out = file_handle.create_dataset(
-                "data",
-                shape=tuple(final_shape),
-                chunks=tuple(chunk_size),
-                dtype="float32",
-            )
+            #dset_out = file_handle.create_dataset(
+                #"data",
+                #shape=tuple(final_shape),
+                #chunks=tuple(chunk_size),
+                #dtype="float32",
+            #)
 
             if self.save_raw:
                 raw_out = file_handle.create_dataset(
@@ -168,6 +168,9 @@ class core_inferrence:
                     chunks=tuple(chunk_size),
                     dtype="float32",
                 )
+
+            dset_out = np.zeros([self.batch_size, self.generator_obj.raw_data.shape[1], self.generator_obj.raw_data.shape[2], 1],
+            dtype="float32")
 
             for index_dataset in np.arange(0, self.nb_datasets, 1):
                 local_data = self.generator_obj.__getitem__(index_dataset)
