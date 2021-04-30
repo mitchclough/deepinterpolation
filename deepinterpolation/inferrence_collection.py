@@ -5,6 +5,8 @@ from deepinterpolation.generic import JsonLoader
 from tensorflow.keras.models import load_model
 import deepinterpolation.loss_collection as lc
 from scipy.io.wavfile import write
+from memory_profiler import profile
+
 
 class fmri_inferrence:
     # This inferrence is specific to fMRI which is raster scanning for denoising
@@ -18,7 +20,6 @@ class fmri_inferrence:
         self.json_data = local_json_loader.json_data
         self.output_file = self.json_data["output_file"]
         self.model_path = self.json_data["model_path"]
-        self.mat_file = self.json_data["mat_file"]
 
         # This is used when output is a full volume to select only the center
         # currently only set to true. Future implementation could make smarter scanning of the volume and leverage more
@@ -123,7 +124,7 @@ class core_inferrence:
         local_json_loader.load_json()
         self.json_data = local_json_loader.json_data
 
-        self.output_file = self.json_data["output_file"]
+        #self.output_file = self.json_data["output_file"]
         self.model_path = self.json_data["model_path"]
         self.mat_file = self.json_data["mat_file"]
 
@@ -145,7 +146,7 @@ class core_inferrence:
             self.model_path,
             custom_objects={"annealed_loss": lc.loss_selector("annealed_loss")},
         )
-
+    #@profile()
     def run(self):
         final_shape = [self.nb_datasets * self.batch_size]
         final_shape.extend(self.indiv_shape)
@@ -210,10 +211,11 @@ class core_inferrence:
                 :,
             ] = corrected_data
 
-            mat_dict = sio.loadmat(self.mat_file)
-            matdata = np.ascontiguousarray(dset_out)
-            matsavedata = np.swapaxes(matdata, 0, 2)
-            matsavedata = np.swapaxes(matsavedata, 0, 1)
-            mat_dict["inference_data"] = matsavedata
+
+        return dset_out
+            #matdata = np.ascontiguousarray(dset_out)
+            #matdata = matdata[:,self.generator_obj.a:512-self.generator_obj.a,self.generator_obj.b:512-self.generator_obj.b]
+            #matsavedata = np.swapaxes(matdata, 0, 2)
+            #matsavedata = np.swapaxes(matsavedata, 0, 1)
             #matfilename = self.output_file[0:len(self.output_file)-2] + 'mat'
-            sio.savemat(self.mat_file, mat_dict)
+            #sio.savemat(self.mat_file, mdict={'inference_data':matsavedata})
