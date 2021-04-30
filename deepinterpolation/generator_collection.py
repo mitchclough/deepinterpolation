@@ -945,15 +945,14 @@ class SingleTifGenerator(DeepGenerator):
         self.start_frame = self.json_data["start_frame"]
         self.steps_per_epoch = self.json_data["steps_per_epoch"]
 
-        try:
-            mat_file = loadmat(self.raw_data_file)['motion_corrected2']
-        except:
-            mat_file = loadmat(self.raw_data_file)['motion_corrected']
+
+        mat_file = loadmat(self.raw_data_file)['motion_corrected']
         mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 1, 2))
         mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 0, 1))
-        a = int((512-mat_file.shape[1])/2)
-        b = int((512-mat_file.shape[2])/2)
-        self.raw_data = np.pad(mat_file, [(0, 0), (a, a), (b, b)], mode='constant')
+        self.a = int((512-mat_file.shape[1])/2)
+        self.b = int((512-mat_file.shape[2])/2)
+        self.raw_data = np.pad(mat_file, [(0, 0), (self.a, self.a), (self.b, self.b)], mode='constant')
+
 
         #For adding zeros before and after
         #import random
