@@ -246,7 +246,7 @@ for i, path in enumerate(tqdm(train_paths_td)):
 
     if i%50==0:
         area = (path.split('/'))[-1].split('_')[0]
-        webhook_url="https://hooks.slack.com/services/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"
+        webhook_url="url"
         slack_data={'text':animal + sess + area + ' deep interpolation batch ' + str(i)+ '/' + str(len(train_paths_td))+' is done', 'channel':"#e_pipeline_log"}
         response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
 
@@ -264,7 +264,7 @@ for i, path in enumerate(tqdm(train_paths_td)):
 #         print(datetime.now() - startTime)
 #         time.sleep(1)
 
-#         # webhook_url="https://hooks.slack.com/services/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"
+#         # webhook_url="url"
 #         # slack_data={'text':animal + ' deep interpolation batch ' + str(i)+ ' pass 1 is done', 'channel':"#e_pipeline_log"}
 #         # response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
 
@@ -279,7 +279,7 @@ for i, path in enumerate(tqdm(train_paths_td)):
 
 
 
-#         # webhook_url="https://hooks.slack.com/services/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"
+#         # webhook_url="url"
 #         # slack_data={'text':animal + ' deep interpolation batch ' +str(i)+ 'pass 2 is done', 'channel':"#e_pipeline_log"}
 #         # response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
 #         if i>0 and i%5==0:
