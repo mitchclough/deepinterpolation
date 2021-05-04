@@ -1,16 +1,13 @@
 import os
 from datetime import datetime
-import pathlib
 from scipy.io import loadmat
 
 
-def inference(path):
+def inference(path,tag,sess):
 
     import os
-    from datetime import datetime
     import scipy.io as sio
     from deepinterpolation.generic import JsonSaver, ClassLoader
-    import re
 
 
     generator_param = {}
@@ -66,13 +63,13 @@ def inference(path):
         print("folder already exists")
 
     #tag = re.search('\\\\{4}(.+?).mat',path).group(1)
-    tag=path.split("/")[-1].replace('.mat','')
 
-    path_generator = os.path.join(jobdir, "generator" + tag + ".json")
+
+    path_generator = os.path.join(jobdir, "generator_" + sess + tag + ".json")
     json_obj = JsonSaver(generator_param)
     json_obj.save_json(path_generator)
 
-    path_infer = os.path.join(jobdir, "inferrence" + tag + ".json")
+    path_infer = os.path.join(jobdir, "inferrence_" + sess + tag + ".json")
     json_obj = JsonSaver(inferrence_param)
     json_obj.save_json(path_infer)
 
@@ -97,9 +94,8 @@ def inference(path):
     os.remove(path_generator)
     os.remove(path_infer)
 
-def inference2(path,start,end):
+def inference2(path,start,end,tag,sess):
     import os
-    from datetime import datetime
     from deepinterpolation.generic import JsonSaver, ClassLoader
     import numpy as np
     import scipy.io as sio
@@ -157,11 +153,9 @@ def inference2(path,start,end):
     except:
         print("folder already exists")
 
-    tag=path.split("/")[-1].replace('.mat','')
 
-    path_generator = os.path.join(jobdir, "generator2" + tag + ".json")
+    path_generator = os.path.join(jobdir, "generator2_" + sess + tag +".json")
 
-    path_generator = os.path.join(jobdir, "generator2" + tag + ".json")
     json_obj = JsonSaver(generator_param)
     json_obj.save_json(path_generator)
 
@@ -207,8 +201,6 @@ import numpy as np
 import glob
 import requests
 import json
-import time
-import tensorflow as tf
 from tqdm import tqdm
 
 
@@ -226,7 +218,7 @@ local_train_paths = glob.glob(os.path.join(animal_path, animal +'-*/PreProcess/*
 #         yield iterable[ndx:min(ndx + n, l)]
 
 train_paths_td = []
-for local_train_path in local_train_paths[31:32]:
+for local_train_path in local_train_paths[30:31]:
     train_paths = sorted(set(glob.glob(os.path.join(local_train_path,'*.mat')))-set(glob.glob(os.path.join(local_train_path,'*_dp.mat'))))
     train_paths_done = glob.glob(os.path.join(local_train_path,'*_dp.mat'))
     for i in train_paths:
@@ -234,13 +226,14 @@ for local_train_path in local_train_paths[31:32]:
             train_paths_td.append(i)
 print(len(train_paths_td))
 
-test= train_paths_td[:4]
 
-for i, path in enumerate(tqdm(test)):
+
+for i, path in enumerate(tqdm(train_paths_td)):
+    tag=path.split("/")[-1].replace('.mat','')
+    sess=(path.split('-'))[1].split('/')[0]
     print('start pass 1')
     startTime=datetime.now()
-    with tf.device('/GPU:0'):
-        inference(path)
+    inference(path,tag,sess)
     print(datetime.now() - startTime)
 
     print('start pass 2')
@@ -249,7 +242,13 @@ for i, path in enumerate(tqdm(test)):
     start=int(np.floor(float(mat_file.shape[2]-60)) / 5)*5 #to grab extra frames missed by batch size
     end = mat_file.shape[2]-1
     if (dp_file.shape[2] != mat_file.shape[2]-60):
-        inference2(path,start,end)
+        inference2(path,start,end,tag,sess)
+
+    if i%50==0:
+        area = (path.split('/'))[-1].split('_')[0]
+        webhook_url="https://hooks.slack.com/services/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"
+        slack_data={'text':animal + sess + area + ' deep interpolation batch ' + str(i)+ '/' + str(len(train_paths_td))+' is done', 'channel':"#e_pipeline_log"}
+        response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
 
 
 # import multiprocessing as mp
@@ -265,7 +264,7 @@ for i, path in enumerate(tqdm(test)):
 #         print(datetime.now() - startTime)
 #         time.sleep(1)
 
-#         # webhook_url="https://hooks.slack.com/services/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"
+#         # webhook_url="https://hooks.slack.com/services/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"
 #         # slack_data={'text':animal + ' deep interpolation batch ' + str(i)+ ' pass 1 is done', 'channel':"#e_pipeline_log"}
 #         # response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
 
@@ -280,7 +279,7 @@ for i, path in enumerate(tqdm(test)):
 
 
 
-#         # webhook_url="https://hooks.slack.com/services/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"
+#         # webhook_url="https://hooks.slack.com/services/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"
 #         # slack_data={'text':animal + ' deep interpolation batch ' +str(i)+ 'pass 2 is done', 'channel':"#e_pipeline_log"}
 #         # response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
 #         if i>0 and i%5==0:
@@ -294,4 +293,3 @@ for i, path in enumerate(tqdm(test)):
     #inference(i)
     #except:
         #print("corrupt file")
-    
