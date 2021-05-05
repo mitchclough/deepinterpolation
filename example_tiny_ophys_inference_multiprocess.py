@@ -3,12 +3,14 @@ from datetime import datetime
 from scipy.io import loadmat
 
 
-def inference(path,tag,sess):
+def inference(path):
 
     import os
     import scipy.io as sio
     from deepinterpolation.generic import JsonSaver, ClassLoader
+    from datetime import datetime
 
+    startTime=datetime.now()
 
     generator_param = {}
     inferrence_param = {}
@@ -63,7 +65,8 @@ def inference(path,tag,sess):
         print("folder already exists")
 
     #tag = re.search('\\\\{4}(.+?).mat',path).group(1)
-
+    sess = (path.split('-'))[1].split('/')[0]
+    tag=path.split("/")[-1].replace('.mat','')
 
     path_generator = os.path.join(jobdir, "generator_" + sess + tag + ".json")
     json_obj = JsonSaver(generator_param)
@@ -94,7 +97,9 @@ def inference(path,tag,sess):
     os.remove(path_generator)
     os.remove(path_infer)
 
-def inference2(path,start,end,tag,sess):
+    print(datetime.now() - startTime)
+
+def inference2(path,start,end):
     import os
     from deepinterpolation.generic import JsonSaver, ClassLoader
     import numpy as np
@@ -153,13 +158,15 @@ def inference2(path,start,end,tag,sess):
     except:
         print("folder already exists")
 
+    sess = (path.split('-'))[1].split('/')[0]
+    tag=path.split("/")[-1].replace('.mat','')
 
     path_generator = os.path.join(jobdir, "generator2_" + sess + tag +".json")
 
     json_obj = JsonSaver(generator_param)
     json_obj.save_json(path_generator)
 
-    path_infer = os.path.join(jobdir, "inferrence.json")
+    path_infer = os.path.join(jobdir, "inferrence2_" + sess + tag + ".json")
     json_obj = JsonSaver(inferrence_param)
     json_obj.save_json(path_infer)
 
@@ -202,6 +209,7 @@ import glob
 import requests
 import json
 from tqdm import tqdm
+import time
 
 
 
@@ -212,10 +220,20 @@ local_train_paths = glob.glob(os.path.join(animal_path, animal +'-*/PreProcess/*
 #local_train_path = os.path.join(os.environ['TMPDIR'],'A0_Ch0')
 
 
-# def batch(iterable, n=1):
-#     l=len(iterable)
-#     for ndx in range(0, l, n):
-#         yield iterable[ndx:min(ndx + n, l)]
+def batch(iterable, n=1):
+    l=len(iterable)
+    for ndx in range(0, l, n):
+        yield iterable[ndx:min(ndx + n, l)]
+
+
+
+# import tensorflow as tf
+# from keras import backend as K
+# cfg=K.tf.ConfigProto()
+# #cfg.gpu_options.allow_growth=True #this is optional
+# cfg.gpu_options.per_process_gpu_memory_fraction = 0.8 #you can use any percentage here
+
+
 
 train_paths_td = []
 for local_train_path in local_train_paths[30:31]:
@@ -228,62 +246,64 @@ print(len(train_paths_td))
 
 
 
-for i, path in enumerate(tqdm(train_paths_td)):
-    tag=path.split("/")[-1].replace('.mat','')
-    sess=(path.split('-'))[1].split('/')[0]
-    print('start pass 1')
-    startTime=datetime.now()
-    inference(path,tag,sess)
-    print(datetime.now() - startTime)
+# for i, path in enumerate(tqdm(train_paths_td)):
+#     sess = (path.split('-'))[1].split('/')[0]
+#     tag=path.split("/")[-1].replace('.mat','')
 
-    print('start pass 2')
-    mat_file = loadmat(path)['motion_corrected']
-    dp_file= loadmat(path.replace('.mat','_dp.mat'))['inference_data']
-    start=int(np.floor(float(mat_file.shape[2]-60)) / 5)*5 #to grab extra frames missed by batch size
-    end = mat_file.shape[2]-1
-    if (dp_file.shape[2] != mat_file.shape[2]-60):
-        inference2(path,start,end,tag,sess)
+#     print('start pass 1')
+#     startTime=datetime.now()
+#     inference(path,tag,sess)
+#     print(datetime.now() - startTime)
 
-    if i%50==0:
-        area = (path.split('/'))[-1].split('_')[0]
+#     print('start pass 2')
+#     mat_file = loadmat(path)['motion_corrected']
+#     dp_file= loadmat(path.replace('.mat','_dp.mat'))['inference_data']
+#     start=int(np.floor(float(mat_file.shape[2]-60)) / 5)*5 #to grab extra frames missed by batch size
+#     end = mat_file.shape[2]-1
+#     if (dp_file.shape[2] != mat_file.shape[2]-60):
+#         inference2(path,start,end,tag,sess)
+
+#     if i%50==0 and i>0:
+#         area = (path.split('/'))[-1].split('_')[0]
+#         webhook_url="url"
+#         slack_data={'text':animal + "-"+ sess + " " + area + ' deep interpolation ' + str(i)+ '/' + str(len(train_paths_td))+' is done', 'channel':"#e_pipeline_log"}
+#         response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
+
+total_batch=sum(1 for x in batch(train_paths_td,30))
+
+import multiprocessing as mp
+if __name__=='__main__':
+    for i, path in enumerate(batch(train_paths_td,30)):
+        print("starting batch "+str(i))
+        startTime=datetime.now()
+        pool = mp.Pool(12)
+        pool.map(inference,path)
+        pool.close()
+        pool.join()
+        pool.terminate()
+        print(datetime.now() - startTime)
+        time.sleep(1)
+
         webhook_url="url"
-        slack_data={'text':animal + sess + area + ' deep interpolation batch ' + str(i)+ '/' + str(len(train_paths_td))+' is done', 'channel':"#e_pipeline_log"}
+        slack_data={'text':animal + ' deep interpolation batch ' + str(i) + "/" + str(total_batch) + ' pass 1 is done', 'channel':"#e_pipeline_log"}
         response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
 
 
-# import multiprocessing as mp
-# if __name__=='__main__':
-#     # for i, path in enumerate(batch(train_paths_td,30)):
-#         # print("starting batch "+str(i))
-#         startTime=datetime.now()
-#         pool = mp.Pool(4)
-#         pool.map(inference,path)
-#         pool.close()
-#         pool.join()
-#         pool.terminate()
-#         print(datetime.now() - startTime)
-#         time.sleep(1)
-
-#         # webhook_url="url"
-#         # slack_data={'text':animal + ' deep interpolation batch ' + str(i)+ ' pass 1 is done', 'channel':"#e_pipeline_log"}
-#         # response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
-
-#         from tqdm import tqdm
-#         for j in tqdm(path):
-#             mat_file = loadmat(j)['motion_corrected']
-#             dp_file= loadmat(j.replace('.mat','_dp.mat'))['inference_data']
-#             start=int(np.floor(float(mat_file.shape[2]-60)) / 5)*5 #to grab extra frames missed by batch size
-#             end = mat_file.shape[2]-1
-#             if (dp_file.shape[2] != mat_file.shape[2]-60):
-#                 inference2(j,start,end)
+        for j in tqdm(path):
+            mat_file = loadmat(j)['motion_corrected']
+            dp_file= loadmat(j.replace('.mat','_dp.mat'))['inference_data']
+            start=int(np.floor(float(mat_file.shape[2]-60)) / 5)*5 #to grab extra frames missed by batch size
+            end = mat_file.shape[2]-1
+            if (dp_file.shape[2] != mat_file.shape[2]-60):
+                inference2(j,start,end)
 
 
 
-#         # webhook_url="url"
-#         # slack_data={'text':animal + ' deep interpolation batch ' +str(i)+ 'pass 2 is done', 'channel':"#e_pipeline_log"}
-#         # response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
-#         if i>0 and i%5==0:
-#             time.sleep(2.5)
+        webhook_url="url"
+        slack_data={'text':animal + ' deep interpolation batch ' + str(i) + "/" + str(total_batch) + ' pass 1 is done', 'channel':"#e_pipeline_log"}
+        response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
+        if i>0 and i%10==0:
+            time.sleep(2.5)
 
 
 #for i in tqdm(train_paths[144:150]):
