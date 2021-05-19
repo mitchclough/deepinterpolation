@@ -27,12 +27,13 @@ generator_test_param["name"] = "SingleTifGenerator"
 generator_test_param["pre_post_frame"] = 30
 generator_test_param['pre_post_omission'] = 1
 
+#change to path of an example video(preferably not one in the training set)
 generator_test_param[
     "train_path"
 ] = "/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-32/PreProcess/A1_Ch0/A1_Ch0_10-56-09.mat"
 generator_test_param["batch_size"] = 5
 generator_test_param["start_frame"] = 0
-generator_test_param["end_frame"] = 639
+generator_test_param["end_frame"] = -1
 generator_test_param["steps_per_epoch"] = -1
 generator_test_param["randomize"] = 0
 
@@ -47,6 +48,7 @@ generator_test_param["randomize"] = 0
 train_paths = []
 frame_nums = []
 
+#csv file with paths of videos, make sure paths start with /net
 with open('/net/claustrum2/mnt/data/Projects/Perirhinal/deepinterpolation/train_paths_80_bad.csv','r') as csv_file:
     for a in csv.reader(csv_file, delimiter=','):
         train_paths.append(a[0])
@@ -79,12 +81,13 @@ training_param["name"] = "transfer_trainer"
 training_param[
     "model_path"
 ] = r"/usr3/bustaff/dlamay/deepinterpolation/2019_09_11_23_32_unet_single_1024_mean_absolute_error_Ai148-0450.h5"
+#path to trained model, upload this model to your home directory
 
 training_param["run_uid"] = run_uid
 training_param["batch_size"] = generator_test_param["batch_size"]
 training_param["steps_per_epoch"] = steps_per_epoch
 training_param["period_save"] = 25
-training_param["nb_gpus"] = 2
+training_param["nb_gpus"] = 1
 training_param["apply_learning_decay"] = 0
 training_param["pre_post_frame"] = generator_test_param["pre_post_frame"]
 training_param["nb_times_through_data"] = 1
