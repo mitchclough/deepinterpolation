@@ -27,4 +27,4 @@ cd /usr3/bustaff/dlamay/deepinterpolation/
 
 python setup.py  install
 
-python multi_ophys_training_chen_lab.py
+python multi_ophys_training_chen_lab_transfer.py
