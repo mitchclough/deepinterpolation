@@ -210,7 +210,7 @@ from tqdm import tqdm
 import tensorflow as tf
 
 
-sys.path.append("/net/claustrum2/mnt/data/Projects/Perirhinal/deepinterpolation")
+
 
 
 
