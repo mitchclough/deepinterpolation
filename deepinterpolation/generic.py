@@ -25,7 +25,7 @@ class JsonLoader:
 
         with open(self.path, "r") as read_file:
             self.json_data = json.load(read_file)
-
+            print("done")
     def set_default(self, parameter_name, default_value):
         """
         set default forces the initialization of a parameter if it was not present in
