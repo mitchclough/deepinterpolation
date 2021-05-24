@@ -247,7 +247,7 @@ for i, path in enumerate(tqdm(train_paths_td)):
     train_paths = sorted(set(glob.glob(os.path.join(local_train_path, '*.mat')))-set(glob.glob(os.path.join(local_train_path,'*_dp.mat'))))
     train_paths_done=glob.glob(os.path.join(local_train_path,'*_dp.mat'))
     if len(train_paths)==len(train_paths_done):
-        webhook_url="https://hooks.slack.com/services/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"
+        webhook_url="url"
         slack_data={'text': "pr012-"+ sess + " " + area + ' deep interpolation is done', 'channel':"#e_pipeline_log"}
         response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
     #prev_area = area
