@@ -241,14 +241,4 @@ for i, path in enumerate(tqdm(train_paths_td)):
     if (dp_file.shape[2] != mat_file.shape[2]-60):
         inference2(path,start,end,tag,sess)
 
-    area = (path.split('/'))[-1].split('_')[0]
-    #if (area != prev_area or sess!=prev_sess) and i>0:
-    local_train_path=animal_path + "pr012-" + sess + "/PreProcess/" + area + "_Ch0/"
-    train_paths = sorted(set(glob.glob(os.path.join(local_train_path, '*.mat')))-set(glob.glob(os.path.join(local_train_path,'*_dp.mat'))))
-    train_paths_done=glob.glob(os.path.join(local_train_path,'*_dp.mat'))
-    if len(train_paths)==len(train_paths_done):
-        webhook_url="url"
-        slack_data={'text': "pr012-"+ sess + " " + area + ' deep interpolation is done', 'channel':"#e_pipeline_log"}
-        response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
-    #prev_area = area
-    #prev_sess = sess
+
