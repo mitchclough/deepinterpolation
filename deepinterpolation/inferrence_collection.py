@@ -6,6 +6,7 @@ from tensorflow.keras.models import load_model
 import deepinterpolation.loss_collection as lc
 from scipy.io.wavfile import write
 from memory_profiler import profile
+import tensorflow.python.keras.backend as K
 
 
 class fmri_inferrence:
@@ -91,7 +92,7 @@ class fmri_inferrence:
                                 local_x, local_y, local_z, local_t
                             )
 
-                predictions_data = self.model.predict(input_full)
+                predictions_data = self.model.predict_on_batch(input_full)
                 corrected_data = (
                     predictions_data * self.generator_obj.local_std
                     + self.generator_obj.local_mean
@@ -115,13 +116,19 @@ class fmri_inferrence:
 
 
 class core_inferrence:
+    import tensorflow as tf
+    tf.compat.v1.disable_v2_behavior()
+    tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=.33)
+    
+    
     # This is the generic inferrence class
     def __init__(self, inferrence_json_path, generator_obj):
         self.inferrence_json_path = inferrence_json_path
         self.generator_obj = generator_obj
-
+       
         local_json_loader = JsonLoader(inferrence_json_path)
         local_json_loader.load_json()
+   
         self.json_data = local_json_loader.json_data
 
         #self.output_file = self.json_data["output_file"]
@@ -137,6 +144,7 @@ class core_inferrence:
             self.rescale = self.json_data["rescale"]
         else:
             self.rescale = True
+        
 
         self.batch_size = self.generator_obj.batch_size
         self.nb_datasets = len(self.generator_obj)
@@ -146,6 +154,7 @@ class core_inferrence:
             self.model_path,
             custom_objects={"annealed_loss": lc.loss_selector("annealed_loss")},
         )
+    
     #@profile()
     def run(self):
         final_shape = [self.nb_datasets * self.batch_size]
@@ -179,12 +188,13 @@ class core_inferrence:
         for index_dataset in np.arange(0, self.nb_datasets, 1):
             local_data = self.generator_obj.__getitem__(index_dataset)
 
-            predictions_data = self.model.predict(local_data[0])
+            predictions_data = self.model.predict(local_data[0],batch_size=5)
 
             local_mean, local_std = self.generator_obj.__get_norm_parameters__(
                 index_dataset
             )
             local_size = predictions_data.shape[0]
+        
 
             if self.rescale:
                 corrected_data = predictions_data * local_std + local_mean
@@ -210,8 +220,9 @@ class core_inferrence:
                 + local_size,
                 :,
             ] = corrected_data
-
-
+        
+        K.clear_session()
+        
         return dset_out
             #matdata = np.ascontiguousarray(dset_out)
             #matdata = matdata[:,self.generator_obj.a:512-self.generator_obj.a,self.generator_obj.b:512-self.generator_obj.b]
