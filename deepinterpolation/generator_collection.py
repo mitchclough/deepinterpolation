@@ -951,8 +951,14 @@ class SingleTifGenerator(DeepGenerator):
         mat_file = np.ascontiguousarray(np.swapaxes(mat_file, 0, 1))
         self.a = int((512-mat_file.shape[1])/2)
         self.b = int((512-mat_file.shape[2])/2)
-        self.raw_data = np.pad(mat_file, [(0, 0), (self.a, self.a), (self.b, self.b)], mode='constant')
-
+        if (self.a%2 != 0) & (self.b%2 !=0):
+            self.raw_data = np.pad(mat_file, [(0, 0), (self.a + 1, self.a), (self.b+1, self.b)], mode='constant')
+        elif self.b%2 !=0:
+            self.raw_data = np.pad(mat_file, [(0, 0), (self.a, self.a), (self.b+1, self.b)], mode='constant')
+        elif self.a%2 !=0:
+            self.raw_data = np.pad(mat_file, [(0, 0), (self.a+ 1, self.a), (self.b, self.b)], mode='constant')
+        else:
+            self.raw_data = np.pad(mat_file, [(0, 0), (self.a, self.a), (self.b, self.b)], mode='constant')
 
         #For adding zeros before and after
         #import random
