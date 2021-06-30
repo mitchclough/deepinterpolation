@@ -37,13 +37,6 @@ generator_test_param["end_frame"] = -1
 generator_test_param["steps_per_epoch"] = -1
 generator_test_param["randomize"] = 0
 
-#local_train_path = '/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-1/PreProcess/A0_Ch0'
-#local_train_path = os.path.join(os.environ['TMPDIR'],'A0_Ch0')
-
-#train_paths = glob.glob(os.path.join(local_train_path,'*.mat'))
-
-# Use the next 3 lines to add different sessions/animals
-#local_train_paths = []
 
 train_paths = []
 frame_nums = []
@@ -54,8 +47,6 @@ with open('/net/claustrum2/mnt/data/Projects/Perirhinal/deepinterpolation/train_
         train_paths.append(a[0])
         frame_nums.append(int(a[1]))
 
-#for local_train_path in local_train_paths:
-    #train_paths.extend([f for f in glob.glob(os.path.join(local_train_path,'*.mat')))
 
 generator_param_list = []
 for i in range(len(train_paths)):
