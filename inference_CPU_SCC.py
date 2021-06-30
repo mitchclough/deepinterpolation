@@ -25,13 +25,6 @@ def inference(path,tag,sess):
     ] = -1  # No steps necessary for inference as epochs are not relevant. -1 deactivate it.
 
     generator_param["train_path"] = path
-    #X:/Projects/Perirhinal/Animals/pr020/2P/pr020-1/PreProcess/A1_Ch0/A1_Ch0_15-31-28.mat"
-    #os.path.join(
-        #pathlib.Path(__file__).parent.absolute(),
-        #"..",
-        #"sample_data",
-        #"A0_Ch0_16-44-59.mat",
-    #)
 
     generator_param["batch_size"] = 5
     generator_param["start_frame"] = 0
@@ -48,11 +41,6 @@ def inference(path,tag,sess):
     inferrence_param[
         "model_path"
     ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
-
-    # Replace this path to where you want to store your output file
-    #inferrence_param[
-        #"output_file"
-    #] = "X:/Projects/Perirhinal/deepinterpolation/trained_models/ophys_tiny_continuous_deep_interpolation_pr020-28_A1_Ch0_10-16-03_transfer_rigid_test_train_bad.h5"
 
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
@@ -119,13 +107,6 @@ def inference2(path,start,end,tag,sess):
     ] = -1  # No steps necessary for inference as epochs are not relevant. -1 deactivate it.
 
     generator_param["train_path"] = path
-    #X:/Projects/Perirhinal/Animals/pr020/2P/pr020-1/PreProcess/A1_Ch0/A1_Ch0_15-31-28.mat"
-    #os.path.join(
-        #pathlib.Path(__file__).parent.absolute(),
-        #"..",
-        #"sample_data",
-        #"A0_Ch0_16-44-59.mat",
-    #)
 
     generator_param["batch_size"] = 1
     generator_param["start_frame"] = start
@@ -143,11 +124,7 @@ def inference2(path,start,end,tag,sess):
         "model_path"
     ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
 
-    # Replace this path to where you want to store your output file
-    #inferrence_param[
-        #"output_file"
-    #] = "X:/Projects/Perirhinal/deepinterpolation/trained_models/ophys_tiny_continuous_deep_interpolation_pr020-28_A1_Ch0_10-16-03_transfer_rigid_test_train_bad.h5"
-
+  
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
     jobdir = "/usr3/bustaff/dlamay/deepinterpolation"
