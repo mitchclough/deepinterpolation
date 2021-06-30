@@ -24,13 +24,7 @@ def inference(path,start,end):
     ] = -1  # No steps necessary for inference as epochs are not relevant. -1 deactivate it.
     
     generator_param["train_path"] = path
-    #X:/Projects/Perirhinal/Animals/pr020/2P/pr020-1/PreProcess/A1_Ch0/A1_Ch0_15-31-28.mat"
-    #os.path.join(
-        #pathlib.Path(__file__).parent.absolute(),
-        #"..",
-        #"sample_data",
-        #"A0_Ch0_16-44-59.mat",
-    #)
+
     
     generator_param["batch_size"] = 1
     generator_param["start_frame"] = start
@@ -47,12 +41,7 @@ def inference(path,start,end):
     inferrence_param[
         "model_path"
     ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
-    
-    # Replace this path to where you want to store your output file
-    #inferrence_param[
-        #"output_file"
-    #] = "X:/Projects/Perirhinal/deepinterpolation/trained_models/ophys_tiny_continuous_deep_interpolation_pr020-28_A1_Ch0_10-16-03_transfer_rigid_test_train_bad.h5"
-    
+   
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
     
     jobdir = "/usr3/bustaff/dlamay/deepinterpolation/"
@@ -119,7 +108,6 @@ import numpy as np
 
 startTime=datetime.now()
 
-sys.path.append("/net/claustrum2/mnt/data/Projects/Perirhinal/deepinterpolation")
 
 for sess in tqdm(range(1,2)):
     local_train_path ='/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/pr012-' + str(sess) + '/PreProcess/A1_Ch0'
