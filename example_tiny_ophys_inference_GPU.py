@@ -25,13 +25,7 @@ def inference(path,tag,sess):
     ] = -1  # No steps necessary for inference as epochs are not relevant. -1 deactivate it.
 
     generator_param["train_path"] = path
-    #X:/Projects/Perirhinal/Animals/pr020/2P/pr020-1/PreProcess/A1_Ch0/A1_Ch0_15-31-28.mat"
-    #os.path.join(
-        #pathlib.Path(__file__).parent.absolute(),
-        #"..",
-        #"sample_data",
-        #"A0_Ch0_16-44-59.mat",
-    #)
+
 
     generator_param["batch_size"] = 5
     generator_param["start_frame"] = 0
@@ -49,11 +43,7 @@ def inference(path,tag,sess):
         "model_path"
     ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
 
-    # Replace this path to where you want to store your output file
-    #inferrence_param[
-        #"output_file"
-    #] = "X:/Projects/Perirhinal/deepinterpolation/trained_models/ophys_tiny_continuous_deep_interpolation_pr020-28_A1_Ch0_10-16-03_transfer_rigid_test_train_bad.h5"
-
+   
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
 
@@ -119,13 +109,7 @@ def inference2(path,start,end,tag,sess):
     ] = -1  # No steps necessary for inference as epochs are not relevant. -1 deactivate it.
 
     generator_param["train_path"] = path
-    #X:/Projects/Perirhinal/Animals/pr020/2P/pr020-1/PreProcess/A1_Ch0/A1_Ch0_15-31-28.mat"
-    #os.path.join(
-        #pathlib.Path(__file__).parent.absolute(),
-        #"..",
-        #"sample_data",
-        #"A0_Ch0_16-44-59.mat",
-    #)
+
 
     generator_param["batch_size"] = 1
     generator_param["start_frame"] = start
@@ -143,10 +127,7 @@ def inference2(path,start,end,tag,sess):
         "model_path"
     ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
 
-    # Replace this path to where you want to store your output file
-    #inferrence_param[
-        #"output_file"
-    #] = "X:/Projects/Perirhinal/deepinterpolation/trained_models/ophys_tiny_continuous_deep_interpolation_pr020-28_A1_Ch0_10-16-03_transfer_rigid_test_train_bad.h5"
+   
 
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
@@ -263,54 +244,5 @@ for i, path in enumerate(tqdm(train_paths_td)):
     if (dp_file.shape[2] != mat_file.shape[2]-60):
         inference2(path,start,end,tag,sess)
 
-    if i%50==0 and i>0:
-        area = (path.split('/'))[-1].split('_')[0]
-        webhook_url="url"
-        slack_data={'text':animal + "-"+ sess + " " + area + ' deep interpolation ' + str(i)+ '/' + str(len(train_paths_td))+' is done', 'channel':"#e_pipeline_log"}
-        response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
+ 
 
-
-
-# import multiprocessing as mp
-# if __name__=='__main__':
-#     for i, path in enumerate(batch(train_paths_td,4)):
-#         if i==1:
-#             print("starting batch "+str(i))
-#             startTime=datetime.now()
-#             pool = mp.Pool(2)
-#             pool.map(inference,path)
-#             pool.close()
-#             pool.join()
-#             pool.terminate()
-#             print(datetime.now() - startTime)
-#             time.sleep(1)
-
-#         # webhook_url="url"
-#         # slack_data={'text':animal + ' deep interpolation batch ' + str(i)+ ' pass 1 is done', 'channel':"#e_pipeline_log"}
-#         # response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
-
-
-#             for j in tqdm(path):
-#                 mat_file = loadmat(j)['motion_corrected']
-#                 dp_file= loadmat(j.replace('.mat','_dp.mat'))['inference_data']
-#                 start=int(np.floor(float(mat_file.shape[2]-60)) / 5)*5 #to grab extra frames missed by batch size
-#                 end = mat_file.shape[2]-1
-#                 if (dp_file.shape[2] != mat_file.shape[2]-60):
-#                     inference2(j,start,end)
-
-
-
-#         # webhook_url="url"
-#         # slack_data={'text':animal + ' deep interpolation batch ' +str(i)+ 'pass 2 is done', 'channel':"#e_pipeline_log"}
-#         # response=requests.post(webhook_url, data = json.dumps(slack_data),headers={'Content-Type':'application/json'})
-#         if i>0 and i%5==0:
-#             time.sleep(2.5)
-
-
-#for i in tqdm(train_paths[144:150]):
-    #print(i)
-
-    #try:\
-    #inference(i)
-    #except:
-        #print("corrupt file")
