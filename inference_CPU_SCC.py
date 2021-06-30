@@ -45,7 +45,7 @@ def inference(path,tag,sess):
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
 
-    jobdir = "/usr3/bustaff/dlamay/deepinterpolation/"
+    jobdir = "/usr3/bustaff/dlamay/deepinterpolation/" #your home directory
 
     try:
         os.mkdir(jobdir)
@@ -127,7 +127,7 @@ def inference2(path,start,end,tag,sess):
   
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
-    jobdir = "/usr3/bustaff/dlamay/deepinterpolation"
+    jobdir = "/usr3/bustaff/dlamay/deepinterpolation" #replace with your home directory
 
     try:
         os.mkdir(jobdir)
@@ -198,9 +198,6 @@ else:
     train_paths_td=data[(task_id-1)*6:(len(data))-1]
 
 
-animal_path="/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr012/2P/"
-prev_sess="0"
-prev_area="B1"
 for i, path in enumerate(tqdm(train_paths_td)):
     sess = (path.split('-'))[1].split('/')[0]
     tag=path.split("/")[-1].replace('.mat','')
