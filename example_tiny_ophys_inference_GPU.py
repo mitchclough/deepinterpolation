@@ -191,7 +191,7 @@ import tensorflow.python.keras.backend as K
 import tensorflow as tf
 
 
-sys.path.append("/net/claustrum2/mnt/data/Projects/Perirhinal/deepinterpolation")
+
 animal = 'pr020'
 animal_path ='/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/' + animal + '/2P/'
 local_train_paths = glob.glob(os.path.join(animal_path, animal +'-*/PreProcess/*_Ch0'))
