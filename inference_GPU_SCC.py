@@ -25,13 +25,7 @@ def inference(path,tag,sess):
     ] = -1  # No steps necessary for inference as epochs are not relevant. -1 deactivate it.
 
     generator_param["train_path"] = path
-    #X:/Projects/Perirhinal/Animals/pr020/2P/pr020-1/PreProcess/A1_Ch0/A1_Ch0_15-31-28.mat"
-    #os.path.join(
-        #pathlib.Path(__file__).parent.absolute(),
-        #"..",
-        #"sample_data",
-        #"A0_Ch0_16-44-59.mat",
-    #)
+
 
     generator_param["batch_size"] = 5
     generator_param["start_frame"] = 0
@@ -49,11 +43,7 @@ def inference(path,tag,sess):
         "model_path"
     ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
 
-    # Replace this path to where you want to store your output file
-    #inferrence_param[
-        #"output_file"
-    #] = "X:/Projects/Perirhinal/deepinterpolation/trained_models/ophys_tiny_continuous_deep_interpolation_pr020-28_A1_Ch0_10-16-03_transfer_rigid_test_train_bad.h5"
-
+  
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
 
@@ -64,7 +54,7 @@ def inference(path,tag,sess):
     except:
         print("folder already exists")
 
-    #tag = re.search('\\\\{4}(.+?).mat',path).group(1)
+  
 
 
     path_generator = os.path.join(jobdir, "generator_" + sess + tag + ".json")
@@ -119,13 +109,7 @@ def inference2(path,start,end,tag,sess):
     ] = -1  # No steps necessary for inference as epochs are not relevant. -1 deactivate it.
 
     generator_param["train_path"] = path
-    #X:/Projects/Perirhinal/Animals/pr020/2P/pr020-1/PreProcess/A1_Ch0/A1_Ch0_15-31-28.mat"
-    #os.path.join(
-        #pathlib.Path(__file__).parent.absolute(),
-        #"..",
-        #"sample_data",
-        #"A0_Ch0_16-44-59.mat",
-    #)
+
 
     generator_param["batch_size"] = 1
     generator_param["start_frame"] = start
@@ -143,11 +127,7 @@ def inference2(path,start,end,tag,sess):
         "model_path"
     ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
 
-    # Replace this path to where you want to store your output file
-    #inferrence_param[
-        #"output_file"
-    #] = "X:/Projects/Perirhinal/deepinterpolation/trained_models/ophys_tiny_continuous_deep_interpolation_pr020-28_A1_Ch0_10-16-03_transfer_rigid_test_train_bad.h5"
-
+   
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
     jobdir = "/usr3/bustaff/dlamay/deepinterpolation"
@@ -228,9 +208,7 @@ if (task_id*100) < (len(data))-1:
 else:
     train_paths_td=data[(task_id-1)*100:(len(data))-1]
 
-animal_path="/net/claustrum2/mnt/data/Projects/Perirhinal/Animals/pr042/2P/"
-prev_sess="0"
-prev_area="B1"
+
 for i, path in enumerate(tqdm(train_paths_td)):
     sess = (path.split('-'))[1].split('/')[0]
     tag=path.split("/")[-1].replace('.mat','')
