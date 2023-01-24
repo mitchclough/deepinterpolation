@@ -41,13 +41,13 @@ def inference(path,tag,sess):
     # Replace this path to where you stored your model
     inferrence_param[
         "model_path"
-    ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
+    ] = "/usr3/graduate/maclough/trained_model.h5"
 
   
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
 
-    jobdir = "/usr3/bustaff/dlamay/deepinterpolation/"
+    jobdir = "/usr3/graduate/maclough/deepinterpolation/"
 
     try:
         os.mkdir(jobdir)
@@ -81,7 +81,8 @@ def inference(path,tag,sess):
     matdata = matdata[:,data_generator.a:512-data_generator.a,data_generator.b:512-data_generator.b]
     matsavedata = np.swapaxes(matdata, 0, 2)
     matsavedata = np.swapaxes(matsavedata, 0, 1)
-    sio.savemat(path.replace(".mat","_dp.mat"), mdict={'inference_data':matsavedata, 'frame_id':framedata})
+    new_mat_name = path.replace(".mat", "_dp.mat")
+    sio.savemat(new_mat_name, mdict={'inference_data':matsavedata, 'frame_id':framedata}, do_compression=True)
 
     os.remove(path_generator)
     os.remove(path_infer)
@@ -125,12 +126,12 @@ def inference2(path,start,end,tag,sess):
     # Replace this path to where you stored your model
     inferrence_param[
         "model_path"
-    ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
+    ] = "/usr3/graduate/maclough/trained_model.h5"
 
    
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
-    jobdir = "/usr3/bustaff/dlamay/deepinterpolation"
+    jobdir = "/usr3/graduate/maclough/deepinterpolation"
 
     try:
         os.mkdir(jobdir)
@@ -156,11 +157,9 @@ def inference2(path,start,end,tag,sess):
 
 
     # Except this to be slow on a laptop without GPU. Inference needs parallelization to be effective.
-
-
-
-    old=loadmat(path.replace(".mat","_dp.mat"))["inference_data"]
-    old_id = loadmat(path.replace(".mat","_dp.mat"))["frame_id"]
+    new_mat_name = path.replace(".mat", "_dp.mat")
+    old=loadmat(new_mat_name)["inference_data"]
+    old_id = loadmat(new_mat_name)["frame_id"]
     new_id = data_generator.list_samples[0:len(data_generator)*5]
     framedata = np.concatenate([np.squeeze(old_id),new_id])
     out = inferrence_class.run()
@@ -171,8 +170,7 @@ def inference2(path,start,end,tag,sess):
     matsavedata=np.concatenate([old,matdata],0)
     matsavedata = np.swapaxes(matsavedata, 0, 2)
     matsavedata = np.swapaxes(matsavedata, 0, 1)
-    sio.savemat(path.replace(".mat","_dp.mat"), mdict={'inference_data':matsavedata,
-                                                        'frame_id':framedata})
+    sio.savemat(new_mat_name, mdict={'inference_data':matsavedata, 'frame_id':framedata}, do_compression=True)
 
 
     os.remove(path_generator)
@@ -206,8 +204,7 @@ task_id = int(os.environ["SGE_TASK_ID"])
 if (task_id*100) < (len(data))-1:
     train_paths_td=data[(task_id-1)*100:task_id*100]
 else:
-    train_paths_td=data[(task_id-1)*100:(len(data))-1]
-
+    train_paths_td=data[(task_id-1)*100:(len(data))]
 
 for i, path in enumerate(tqdm(train_paths_td)):
     sess = (path.split('-'))[1].split('/')[0]
@@ -221,7 +218,8 @@ for i, path in enumerate(tqdm(train_paths_td)):
 
     print('start pass 2')
     mat_file = loadmat(path)['motion_corrected']
-    dp_file= loadmat(path.replace('.mat','_dp.mat'))['inference_data']
+    new_path = path.replace('.mat', '_dp.mat')
+    dp_file= loadmat(new_path)['inference_data']
     start=int(np.floor(float(mat_file.shape[2]-60)) / 5)*5 #to grab extra frames missed by batch size
     end = mat_file.shape[2]-1
     if (dp_file.shape[2] != mat_file.shape[2]-60):

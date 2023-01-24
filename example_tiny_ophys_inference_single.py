@@ -47,7 +47,7 @@ def inference(path,tag,sess):
     # Replace this path to where you stored your model
     inferrence_param[
         "model_path"
-    ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
+    ] = "/usr3/graduate/maclough/trained_model.h5"
 
     # Replace this path to where you want to store your output file
     #inferrence_param[
@@ -57,7 +57,7 @@ def inference(path,tag,sess):
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
 
-    jobdir = "/usr3/bustaff/dlamay/deepinterpolation/"
+    jobdir = "/usr3/graduate/maclough/deepinterpolation/"
 
     try:
         os.mkdir(jobdir)
@@ -143,7 +143,7 @@ def inference2(path,start,end,tag,sess):
     # Replace this path to where you stored your model
     inferrence_param[
         "model_path"
-    ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
+    ] = "/usr3/graduate/maclough/trained_model.h5"
 
     # Replace this path to where you want to store your output file
     #inferrence_param[
@@ -152,7 +152,7 @@ def inference2(path,start,end,tag,sess):
 
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
-    jobdir = "/usr3/bustaff/dlamay/deepinterpolation"
+    jobdir = "/usr3/graduate/maclough/deepinterpolation"
 
     try:
         os.mkdir(jobdir)
@@ -215,8 +215,7 @@ import tensorflow as tf
 
 
 
-
-path = "your path to video here"
+path = "/net/claustrum3/mnt/data/Projects/Sensorimotor/Animals/sm009/2P/sm009-1/PreProcess/A0_Ch1/A0_Ch1_12-34-25.mat"
 
 
 
