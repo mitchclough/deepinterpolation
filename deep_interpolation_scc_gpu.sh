@@ -13,8 +13,6 @@
 #this sets the project for the script to be run under
 #$ -P jchenlab
 
-#$ -pe omp 2
-
 #Specify number of GPUs
 #$ -l gpus=1
 
