@@ -195,8 +195,10 @@ for gpu in gpus:
 
 tf.compat.v1.disable_v2_behavior()
 
+animal = sys.argv[1]
+session = sys.argv[2]
 
-f = open("/usr3/bustaff/dlamay/deepinterpolation/pr042_files.json")
+f = open("/usr3/graduate/maclough/deepinterpolation/" + animal + "-" + session + "_files.json")
 data = json.load(f)
 f.close()
 
