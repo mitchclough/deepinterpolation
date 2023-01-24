@@ -5,7 +5,6 @@ from deepinterpolation.generic import JsonLoader
 from tensorflow.keras.models import load_model
 import deepinterpolation.loss_collection as lc
 from scipy.io.wavfile import write
-from memory_profiler import profile
 import tensorflow.python.keras.backend as K
 
 
