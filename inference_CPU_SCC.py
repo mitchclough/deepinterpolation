@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 from scipy.io import loadmat
 
-
 def inference(path,tag,sess):
 
     import os
@@ -33,27 +32,22 @@ def inference(path,tag,sess):
         "randomize"
     ] = 0  # This is important to keep the order and avoid the randomization used during training
 
-
     inferrence_param["type"] = "inferrence"
     inferrence_param["name"] = "core_inferrence"
 
     # Replace this path to where you stored your model
     inferrence_param[
         "model_path"
-    ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
+    ] = os.path.expanduser('~') + "/trained_model.h5"
 
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
-
-    jobdir = "/usr3/bustaff/dlamay/deepinterpolation/" #your home directory
+    jobdir = os.path.expanduser('~') + "/deepinterpolation/"
 
     try:
         os.mkdir(jobdir)
     except:
         print("folder already exists")
-
-    #tag = re.search('\\\\{4}(.+?).mat',path).group(1)
-
 
     path_generator = os.path.join(jobdir, "generator_" + sess + tag + ".json")
     json_obj = JsonSaver(generator_param)
@@ -66,20 +60,18 @@ def inference(path,tag,sess):
     generator_obj = ClassLoader(path_generator)
     data_generator = generator_obj.find_and_build()(path_generator)
 
-
     inferrence_obj = ClassLoader(path_infer)
     inferrence_class = inferrence_obj.find_and_build()(path_infer, data_generator)
 
     # Except this to be slow on a laptop without GPU. Inference needs parallelization to be effective.
-
-
     out = inferrence_class.run()
     framedata=data_generator.list_samples[0:len(data_generator)*5]
     matdata = np.ascontiguousarray(out)
     matdata = matdata[:,data_generator.a:512-data_generator.a,data_generator.b:512-data_generator.b]
     matsavedata = np.swapaxes(matdata, 0, 2)
     matsavedata = np.swapaxes(matsavedata, 0, 1)
-    sio.savemat(path.replace(".mat","_dp.mat"), mdict={'inference_data':matsavedata, 'frame_id':framedata})
+    new_mat_name = path.replace(".mat", "_dp.mat")
+    sio.savemat(new_mat_name, mdict={'inference_data':matsavedata, 'frame_id':framedata}, do_compression=True)
 
     os.remove(path_generator)
     os.remove(path_infer)
@@ -92,7 +84,6 @@ def inference2(path,start,end,tag,sess):
     import numpy as np
     import scipy.io as sio
     from scipy.io import loadmat
-
 
     generator_param = {}
     inferrence_param = {}
@@ -115,25 +106,22 @@ def inference2(path,start,end,tag,sess):
         "randomize"
     ] = 0  # This is important to keep the order and avoid the randomization used during training
 
-
     inferrence_param["type"] = "inferrence"
     inferrence_param["name"] = "core_inferrence"
 
     # Replace this path to where you stored your model
     inferrence_param[
         "model_path"
-    ] = "/usr3/bustaff/dlamay/deepinterpolation/2021_03_22_13_24_transfer_mean_squared_error_rigid_test_train_bad.h5"
-
-  
+    ] = os.path.expanduser('~') + "/trained_model.h5"
+ 
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
-    jobdir = "/usr3/bustaff/dlamay/deepinterpolation" #replace with your home directory
+    jobdir = os.path.expanduser('~') + "/deepinterpolation/"
 
     try:
         os.mkdir(jobdir)
     except:
         print("folder already exists")
-
 
     path_generator = os.path.join(jobdir, "generator2_" + sess + tag +".json")
 
@@ -147,17 +135,13 @@ def inference2(path,start,end,tag,sess):
     generator_obj = ClassLoader(path_generator)
     data_generator = generator_obj.find_and_build()(path_generator)
 
-
     inferrence_obj = ClassLoader(path_infer)
     inferrence_class = inferrence_obj.find_and_build()(path_infer, data_generator)
 
-
     # Except this to be slow on a laptop without GPU. Inference needs parallelization to be effective.
-
-
-
-    old=loadmat(path.replace(".mat","_dp.mat"))["inference_data"]
-    old_id = loadmat(path.replace(".mat","_dp.mat"))["frame_id"]
+    new_mat_name = path.replace(".mat", "_dp.mat")
+    old=loadmat(new_mat_name)["inference_data"]
+    old_id = loadmat(new_mat_name)["frame_id"]
     new_id = data_generator.list_samples[0:len(data_generator)*5]
     framedata = np.concatenate([np.squeeze(old_id),new_id])
     out = inferrence_class.run()
@@ -168,14 +152,10 @@ def inference2(path,start,end,tag,sess):
     matsavedata=np.concatenate([old,matdata],0)
     matsavedata = np.swapaxes(matsavedata, 0, 2)
     matsavedata = np.swapaxes(matsavedata, 0, 1)
-    sio.savemat(path.replace(".mat","_dp.mat"), mdict={'inference_data':matsavedata,
-                                                        'frame_id':framedata})
-
+    sio.savemat(new_mat_name, mdict={'inference_data':matsavedata, 'frame_id':framedata}, do_compression=True)
 
     os.remove(path_generator)
     os.remove(path_infer)
-
-
 
 import sys
 import numpy as np
@@ -185,9 +165,12 @@ import json
 from tqdm import tqdm
 import tensorflow.python.keras.backend as K
 import tensorflow as tf
+import os
 
+animal = sys.argv[1]
+session = sys.argv[2]
 
-f = open("/usr3/bustaff/dlamay/deepinterpolation/pr012_files.json")
+f = open(os.path.expanduser('~') + "/deepinterpolation/" + animal + "-" + session + "_files.json")
 data = json.load(f)
 f.close()
 
@@ -195,8 +178,7 @@ task_id = int(os.environ["SGE_TASK_ID"])
 if (task_id*6) < (len(data))-1:
     train_paths_td=data[(task_id-1)*6:task_id*6]
 else:
-    train_paths_td=data[(task_id-1)*6:(len(data))-1]
-
+    train_paths_td=data[(task_id-1)*6:(len(data))]
 
 for i, path in enumerate(tqdm(train_paths_td)):
     sess = (path.split('-'))[1].split('/')[0]
@@ -214,5 +196,3 @@ for i, path in enumerate(tqdm(train_paths_td)):
     end = mat_file.shape[2]-1
     if (dp_file.shape[2] != mat_file.shape[2]-60):
         inference2(path,start,end,tag,sess)
-
-

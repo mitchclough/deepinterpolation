@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 from scipy.io import loadmat
 
-
 def inference(path,tag,sess):
 
     import os
@@ -26,7 +25,6 @@ def inference(path,tag,sess):
 
     generator_param["train_path"] = path
 
-
     generator_param["batch_size"] = 5
     generator_param["start_frame"] = 0
     generator_param["end_frame"] = -1  # -1 to go until the end.
@@ -34,28 +32,22 @@ def inference(path,tag,sess):
         "randomize"
     ] = 0  # This is important to keep the order and avoid the randomization used during training
 
-
     inferrence_param["type"] = "inferrence"
     inferrence_param["name"] = "core_inferrence"
 
     # Replace this path to where you stored your model
     inferrence_param[
         "model_path"
-    ] = "/usr3/graduate/maclough/trained_model.h5"
-
+    ] = os.path.expanduser('~') + "/trained_model.h5"
   
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
-
-    jobdir = "/usr3/graduate/maclough/deepinterpolation/"
+    jobdir = os.path.expanduser('~') + "/deepinterpolation/"
 
     try:
         os.mkdir(jobdir)
     except:
         print("folder already exists")
-
-  
-
 
     path_generator = os.path.join(jobdir, "generator_" + sess + tag + ".json")
     json_obj = JsonSaver(generator_param)
@@ -68,13 +60,10 @@ def inference(path,tag,sess):
     generator_obj = ClassLoader(path_generator)
     data_generator = generator_obj.find_and_build()(path_generator)
 
-
     inferrence_obj = ClassLoader(path_infer)
     inferrence_class = inferrence_obj.find_and_build()(path_infer, data_generator)
 
     # Except this to be slow on a laptop without GPU. Inference needs parallelization to be effective.
-
-
     out = inferrence_class.run()
     framedata=data_generator.list_samples[0:len(data_generator)*5]
     matdata = np.ascontiguousarray(out)
@@ -96,7 +85,6 @@ def inference2(path,start,end,tag,sess):
     import scipy.io as sio
     from scipy.io import loadmat
 
-
     generator_param = {}
     inferrence_param = {}
 
@@ -111,7 +99,6 @@ def inference2(path,start,end,tag,sess):
 
     generator_param["train_path"] = path
 
-
     generator_param["batch_size"] = 1
     generator_param["start_frame"] = start
     generator_param["end_frame"] = end # -1 to go until the end.
@@ -119,25 +106,22 @@ def inference2(path,start,end,tag,sess):
         "randomize"
     ] = 0  # This is important to keep the order and avoid the randomization used during training
 
-
     inferrence_param["type"] = "inferrence"
     inferrence_param["name"] = "core_inferrence"
 
     # Replace this path to where you stored your model
     inferrence_param[
         "model_path"
-    ] = "/usr3/graduate/maclough/trained_model.h5"
-
+    ] = os.path.expanduser('~') + "/trained_model.h5"
    
     inferrence_param["mat_file"] = path.replace(".mat","_dp.mat")
 
-    jobdir = "/usr3/graduate/maclough/deepinterpolation"
+    jobdir = os.path.expanduser('~') + "/deepinterpolation"
 
     try:
         os.mkdir(jobdir)
     except:
         print("folder already exists")
-
 
     path_generator = os.path.join(jobdir, "generator2_" + sess + tag +".json")
 
@@ -151,10 +135,8 @@ def inference2(path,start,end,tag,sess):
     generator_obj = ClassLoader(path_generator)
     data_generator = generator_obj.find_and_build()(path_generator)
 
-
     inferrence_obj = ClassLoader(path_infer)
     inferrence_class = inferrence_obj.find_and_build()(path_infer, data_generator)
-
 
     # Except this to be slow on a laptop without GPU. Inference needs parallelization to be effective.
     new_mat_name = path.replace(".mat", "_dp.mat")
@@ -172,11 +154,8 @@ def inference2(path,start,end,tag,sess):
     matsavedata = np.swapaxes(matsavedata, 0, 1)
     sio.savemat(new_mat_name, mdict={'inference_data':matsavedata, 'frame_id':framedata}, do_compression=True)
 
-
     os.remove(path_generator)
     os.remove(path_infer)
-
-
 
 import sys
 import numpy as np
@@ -186,8 +165,7 @@ import json
 from tqdm import tqdm
 import tensorflow.python.keras.backend as K
 import tensorflow as tf
-
-
+import os
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
@@ -198,7 +176,7 @@ tf.compat.v1.disable_v2_behavior()
 animal = sys.argv[1]
 session = sys.argv[2]
 
-f = open("/usr3/graduate/maclough/deepinterpolation/" + animal + "-" + session + "_files.json")
+f = open(os.path.expanduser('~') + "/deepinterpolation/" + animal + "-" + session + "_files.json")
 data = json.load(f)
 f.close()
 
@@ -225,7 +203,4 @@ for i, path in enumerate(tqdm(train_paths_td)):
     start=int(np.floor(float(mat_file.shape[2]-60)) / 5)*5 #to grab extra frames missed by batch size
     end = mat_file.shape[2]-1
     if (dp_file.shape[2] != mat_file.shape[2]-60):
-        inference2(path,start,end,tag,sess)
-
-
-  
+        inference2(path,start,end,tag,sess) 
