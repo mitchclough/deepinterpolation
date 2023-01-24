@@ -12,4 +12,4 @@ module unload python3
 length=$(< "$anm"-"$sess".length)
 jobs=$(( length / 100 + 1 ))
 
-qsub -N "$anm"-"$sess" -t 1-"$jobs" deep_interpolation_scc.sh "$anm" "$sess"
+qsub -N "$anm"-"$sess" -t 1-"$jobs" deep_interpolation_scc_gpu.sh "$anm" "$sess"
