@@ -2,3 +2,16 @@
 deepinterpolation/h5_test.mat
 deepinterpolation/h5_to_mat.py
 deepinterpolation/configure.txt
+*.h5
+*.json
+**/mypy_cache/
+**/__pycache__/*
+*.length
+*.pyc
+deepinterpolation.egg-info/
+__pycache__/
+*.py[cod]
+.coverage
+build/
+coverage.xml
+dist/
