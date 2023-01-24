@@ -1,7 +1,8 @@
 #!/bin/bash -l
 
 #specify array job
-#$ -t 1-500
+#superseded by submit script
+# -t 1-500
 
 #this makes it so you'll get an email at the (b)eginning of the job, (e)nd of the job, and on an (a)bort of the job
 #$ -m ea
