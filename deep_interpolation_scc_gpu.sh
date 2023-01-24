@@ -5,7 +5,7 @@
 # -t 1-14
 
 #this makes it so you'll get an email at the (b)eginning of the job, (e)nd of the job, and on an (a)bort of the job
-#$ -m a
+#$ -m ea
 
 #this merges output and error files into one file
 #$ -j y
