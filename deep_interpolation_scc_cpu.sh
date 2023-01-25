@@ -15,8 +15,11 @@
 
 #$ -pe omp 16
 
+anm=$1
+sess=$2
+
 module load miniconda
 conda activate deepinterpolation
 module load tensorflow
 
-python inference_CPU_SCC.py
+python inference_CPU_SCC.py "$anm" "$sess"
