@@ -15,7 +15,7 @@ output_name = animal + '-' + session + "_files.json"
 
 train_paths_td = []
 for local_train_path in local_train_paths:
-    train_paths = sorted(set(glob.glob(os.path.join(local_train_path,'*.mat')))-set(glob.glob(os.path.join(local_train_path,'*_dp.mat'))))
+    train_paths = sorted(set(glob.glob(os.path.join(local_train_path,'A*_Ch' + channel + '*.mat')))-set(glob.glob(os.path.join(local_train_path,'A*_Ch' + channel + '*_dp.mat'))))
     train_paths_done = glob.glob(os.path.join(local_train_path,'*_dp.mat'))
     for i in train_paths:
         doneFile = i.replace('.mat', '_dp.mat')
